@@ -1,0 +1,14 @@
+[user]
+	name = [write your user name here]
+	email = [write your git cloud email here for more information follow https://logicand.space]
+	signingkey = [write your git gpg key here for more info follow the white rabbit https://logicand.space]
+[init]
+	defaultBranch = main
+[core]
+	editor = vim
+[color]
+	ui = auto
+[commit]
+	gpgsign = true
+[gpg]
+	program = gpg
