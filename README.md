@@ -32,7 +32,7 @@ The goal is simple:
 On a clean Linux system:
 
 ```bash
-git clone git@github.com:YOUR_USERNAME/experimental_linux.git
+git clone git@github.com:eng-adal/experimental_linux.git
 cd experimental_linux
 ./install.sh
 exec zsh
@@ -81,24 +81,40 @@ This environment ships with:
 * tree, htop, curl, wget
 * GPG tooling
 
-On Debian based systems:
+## Command Aliases
 
-* `bat` is `batcat`
-* `fd` is `fdfind`
-* `ripgrep` is `rg`
+This setup standardises modern CLI tools with short, familiar names.
+The goal is muscle-memory compatibility with better tooling.
 
-Aliases are installed automatically.
+Add the following to your `~/.zshrc` or `~/.bashrc`:
 
----
+```bash
+# Modern replacements
+alias bat='batcat'     # Better cat
+alias fd='fdfind'      # Better find
+alias rg='rg'          # ripgrep (already sane)
 
-## Design principles
+# Safer defaults
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
 
-1. Configuration is code
-2. Rebuild speed beats documentation
-3. Defaults matter
-4. Everything should be reversible
-5. Identity belongs in Git
-6. Automation beats memory
+# Git shortcuts
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit'
+alias gco='git checkout'
+alias gp='git push'
+alias gl='git pull'
+alias gsv='git status --short --branch'
+
+# Quality of life
+alias ll='ls -lah'
+alias la='ls -A'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias cls='clear'
+
 
 ---
 
