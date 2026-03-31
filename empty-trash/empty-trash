@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Version
+VERSION="0.2.3"
+
+if [[ "${1:-}" == "--version" ]]; then
+    echo "empty-trash version $VERSION"
+    exit 0
+fi
+
+# Automation
+case "${1:-}" in
+    --list)
+        trash-list
+        exit 0
+        ;;
+    --clean)
+        trash-empty
+        echo "Trash emptied."
+        exit 0
+        ;;
+esac
+
+# File Locations
+TRASH_FILES="$HOME/.local/share/Trash/files"
+TRASH_INFO="$HOME/.local/share/Trash/info"
+
+# Check Trash Folder
+[[ -d "$TRASH_FILES" ]] || { echo "Trash folder not found."; exit 1; }
+
+
+require_cmd() {
+    command -v "$1" >/dev/null 2>&1 || {
+        echo "Error: '$1' is required but not installed. Please install it first."
+        exit 1
+    }
+}
+
+require_cmd trash-empty
+require_cmd trash-list
+require_cmd tree
+require_cmd du
+require_cmd find
+
+# Helper
+if [[ "${1:-}" == "--help" ]]; then
+    echo "empty-trash $VERSION"
+    echo
+    echo "Usage:"
+    echo "  empty-trash           interactive dashboard"
+    echo "  empty-trash --list    list trash"
+    echo "  empty-trash --clean   empty trash"
+    echo "  empty-trash --version show version"
+    exit 0
+fi
+
+# Error handling
+trap 'echo; echo "Interrupted."; exit 1' INT
+
+#Colour codes
+GREEN=$'\e[32m'
+YELLOW=$'\e[33m'
+RED=$'\e[31m'
+RESET=$'\e[0m'
+
+while true; do
+    before_size=$(du -sh "$TRASH_FILES" 2>/dev/null | cut -f1 || echo "0")
+    file_count=$(trash-list | wc -l | tr -d ' ')
+    echo
+    echo "=========================================="
+    echo "               ${YELLOW}TRASH DASHBOARD${RESET}"
+    echo "=========================================="
+    echo "Trash size: ${RED}$before_size${RESET}"
+    echo "Files: $file_count"
+    echo "----------------------------------"
+
+    read -rp "Remove trash (y), tree view (t), details (d), anything else to quit: " answer
+
+    if [[ "$answer" =~ ^[Yy]$ ]]; then
+        trash-empty
+        after_size=$(du -sh "$TRASH_FILES" 2>/dev/null | cut -f1 || echo "0")
+        echo
+        echo "${GREEN}✅ Trash emptied! Saved space: $before_size → $after_size${RESET}"
+        break
+    elif [[ "$answer" =~ ^[Tt]$ ]]; then
+        set +e
+        tree "$TRASH_FILES" | less || true
+        set -e
+        echo "Tree view displayed. Choose again."
+    elif [[ "$answer" =~ ^[Dd]$ ]]; then
+        du -h --max-depth=1 "$TRASH_FILES" | sort -hr
+        echo
+        ls -ld "$TRASH_FILES"
+        echo
+        echo "Press Enter to continue..."
+        read
+    else
+        echo
+        echo "${RED}❌ Cancelled.${RESET}"
+        break
+    fi
+done
