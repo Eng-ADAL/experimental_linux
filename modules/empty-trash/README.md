@@ -7,6 +7,8 @@ Instead of blindly clearing the trash, `empty-trash` lets you inspect what is in
 
 ---
 
+![Empty Trash Demo](empty-trash.gif)
+
 ## Features
 
 - Interactive trash dashboard
