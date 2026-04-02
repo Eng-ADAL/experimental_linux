@@ -136,5 +136,3 @@ It also serves as a simple example of how Bash scripting can improve everyday wo
 
 MIT License
 
-```
-

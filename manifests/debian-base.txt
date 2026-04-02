@@ -1,0 +1,14 @@
+# core cli tools
+git
+vim
+tmux
+zsh
+
+# utilities
+7z
+ripgrep
+bat
+curl
+wget
+tree
+htop
