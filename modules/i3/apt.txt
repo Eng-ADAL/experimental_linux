@@ -1,0 +1,14 @@
+# i3 desktop
+i3
+i3status
+i3lock
+dmenu
+xorg
+xinit
+
+# desktop utilities
+feh
+lxappearance
+rofi
+picom
+alacritty

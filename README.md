@@ -1,13 +1,16 @@
 # experimental_linux
 
-Under contruction!
+Under construction!
+
+
 
 New repo structure:
 
+
 ```
 experimental_linux/
-│
 ├── bootstrap.sh
+├── install.sh
 ├── README.md
 ├── LICENSE
 │
@@ -18,28 +21,28 @@ experimental_linux/
 │   └── zsh/zshrc
 │
 ├── manifests/
-│   └── debian-base.txt
+│   ├── apt-base.txt
+│   └── flatpak.txt
 │
 ├── modules/
+│   ├── modules.list
 │   ├── base/
+│   │   ├── apt.txt
 │   │   └── install.sh
-│   │
 │   ├── dotfiles/
 │   │   └── install.sh
-│   │
 │   ├── empty-trash/
+│   │   ├── apt.txt
 │   │   ├── empty-trash
-│   │   ├── install.sh
-│   │   └── README.md
-│   │
-│   ├── ios-mount/
-│   │   ├── build_ios_auto.sh
 │   │   └── install.sh
-│   │
+│   ├── ios-mount/
+│   │   ├── apt.txt
+│   │   └── build_ios_auto.sh
 │   └── i3/
+│       ├── apt.txt
 │       └── install.sh
 │
 └── scripts/
     ├── install_packages.sh
-    └── link_config.sh
-```
+    ├── install_flatpak.sh
+    └── link_config.sh```

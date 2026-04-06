@@ -1,5 +1,11 @@
 " =====================================================================
-" ADAL's Productive Vim (.vimrc) - robust
+"
+"                                  github
+"                                 @Eng-ADAL
+"                                ¯\\_(ツ)_/¯
+"
+" =====================================================================
+"                          Enterprise Grad Vim (.vimrc)
 " =====================================================================
 
 set nocompatible
@@ -11,16 +17,23 @@ filetype off
 " -------------------------
 call plug#begin('~/.vim/plugged')
 
-Plug 'preservim/nerdtree'                           " File explorer
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } " Fuzzy finder native installer
-Plug 'junegunn/fzf.vim'                             " FZF integration
-Plug 'tpope/vim-obsession'                          " Session manager
-Plug 'preservim/vim-indent-guides'                  " Visual indent lines
-Plug 'benmills/vimux'                               " Run shell commands via tmux
-Plug 'christoomey/vim-tmux-navigator'               " Navigate between vim and tmux panes easily
+Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }   " File explorer
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }     " Fuzzy finder native installer
+Plug 'junegunn/fzf.vim'                                 " FZF integration
+Plug 'tpope/vim-obsession'                              " Session manager
+Plug 'preservim/vim-indent-guides'                      " Visual indent lines
+Plug 'benmills/vimux'                                   " Run shell commands via tmux
+Plug 'christoomey/vim-tmux-navigator'                   " Navigate between vim and tmux panes easily
 Plug 'catppuccin/vim'
 
 call plug#end()
+
+" =====================================================================
+" Ensure required directories (undo/backup/swap) exist
+" =====================================================================
+silent! call mkdir(expand('~/.vim/undo'), 'p')
+silent! call mkdir(expand('~/.vim/backup'), 'p')
+silent! call mkdir(expand('~/.vim/swap'), 'p')
 
 
 " =====================================================================
@@ -85,7 +98,7 @@ else
 endif
 
 " =====================================================================
-" Colours - try gruvbox, else fall back to desert
+" Colours - try catppuccin, else fall back to desert
 " =====================================================================
 try
   colorscheme catppuccin
@@ -111,10 +124,34 @@ nnoremap <silent> <leader>n :NERDTreeToggle<CR>
 nnoremap <silent> <leader>f :Files<CR>
 nnoremap <silent> <leader>b :Buffers<CR>
 
+" =====================================================================
 " --- Vimux (run commands in tmux split) ---
+" =====================================================================
+
 " Use shellescape to safely handle filenames with spaces
-nnoremap <silent> <leader>r :call VimuxRunCommand("python3 " . shellescape(expand("%"), 1))<CR>
+nnoremap <silent> <leader>r :call VimuxRunCommand('python3 ' . shellescape(expand("%"), 1))<CR>
+
+" Run command in vim
 nnoremap <silent> <leader>t :VimuxPromptCommand<CR>
+
+" Create / reuse a tmux pane for running code with venv (direnv)
+nnoremap <leader>rp :VimuxOpenRunner<CR>:call VimuxRunCommand('direnv exec . "$SHELL"')<CR>
+
+" Run last command again
+nnoremap <leader>rr :VimuxRunLastCommand<CR>
+
+" Kill runner pane if needed
+nnoremap <leader>rk :VimuxCloseRunner<CR>
+
+" Clean/Reset runner terminal
+nnoremap <silent> <leader>rc :call VimuxRunCommand("reset")<CR>
+
+" Launch tiny pane for running code (if not exist)
+let g:VimuxHeight = "30"
+let g:VimuxOrientation = "h"
+
+
+
 
 " --- Obsession ---
 nnoremap <silent> <leader>s :Obsession<CR>
@@ -166,25 +203,31 @@ function! ShowCheatsheetFull() abort
         \ '  │    /pattern -> search forward   n / N -> next / previous      │',
         \ '  │                                                               │',
         \ '  │  Find and Replace                                             │',
-        \ '  │    :%s/<old>/<new>/g                                          │',
+        \ '  │    :%s/<old>/<new>/g       | gc for globally                  │',
         \ '  │                                                               │',
         \ '  │  Splits & Windows:                                            │',
         \ '  │    :split / :vsplit -> create split                           │',
         \ '  │    <C-w>w -> switch windows                                   │',
         \ '  │                                                               │',
         \ '  │  Plugins (leader = <Space>):                                  │',
-        \ '  │    <Space>n -> Toggle NERDTree (file explorer)                │',
-        \ '  │    <Space>f -> FZF file search                                │',
-        \ '  │    <Space>b -> FZF buffer list                                │',
-        \ '  │    <Space>r -> Vimux: run current file in tmux pane           │',
-        \ '  │    <Space>t -> Vimux: prompt for command to run in tmux pane  │',
-        \ '  │    <Space>s -> Obsession: start/stop session tracking         │',
-        \ '  │    <Space>? -> Open this cheatsheet                           │',
+        \ '  │    <Space>n  -> Toggle NERDTree (file explorer)               │',
+        \ '  │    <Space>f  -> FZF file search                               │',
+        \ '  │    <Space>b  -> FZF buffer list                               │',
+        \ '  │                                                               │',
+        \ '  │    <Space>r  -> Vimux: run current file in tmux pane          │',
+        \ '  │    <Space>t  -> Vimux: prompt for command to run in tmux pane │',
+        \ '  │    <Space>rr -> Vimux: Run last command                       │',
+        \ '  │    <Space>rk -> Vimux: Kill runner pane (if needed)           │',
+        \ '  │    <Space>rc -> Vimux: Vipe clean runner pane                 │',
+        \ '  │    <Space>s  -> Obsession: start/stop session tracking        │',
+        \ '  │                                                               │',
+        \ '  │    <Space>?  -> Open this cheatsheet                          │',
         \ '  │                                                               │',
         \ '  │  Quit:                                                        │',
         \ '  │    :q -> quit               :wq -> save & quit                │',
         \ '  └───────────────────────────────────────────────────────────────┘',
         \ ])
+
 
   setlocal nomodifiable
   nnoremap <silent><buffer> <Space> :tabclose<CR>
@@ -192,4 +235,5 @@ function! ShowCheatsheetFull() abort
 endfunction
 
 nnoremap <silent> <leader>? :call ShowCheatsheetFull()<CR>
+
 

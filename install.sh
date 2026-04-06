@@ -14,10 +14,12 @@ sudo apt update
 sudo apt install -y "${PACKAGES[@]}"
 
 echo "Linking dotfiles"
-ln -sf "$PWD/config/vimrc" ~/.vimrc
-ln -sf "$PWD/config/tmux.conf" ~/.tmux.conf
-ln -sf "$PWD/config/zshrc" ~/.zshrc
+ln -sf "$PWD/configs/vim/vimrc" ~/.vimrc
+ln -sf "$PWD/configs/tmux/tmux.conf" ~/.tmux.conf
+ln -sf "$PWD/configs/zsh/zshrc" ~/.zshrc
+ln -sf "$PWD/configs/git/gitconfig" ~/.gitconfig
 
+echo "Setting up gitconfig"
 if [ -f "$PWD/config/gitconfig" ]; then
   ln -sf "$PWD/config/gitconfig" ~/.gitconfig
 fi
@@ -25,6 +27,14 @@ fi
 echo "Installing TPM (tmux plugin manager)"
 if [ ! -d ~/.tmux/plugins/tpm ]; then
   git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+fi
+
+echo "Installing Tmux plugins"
+if [ -d "$HOME/.tmux/plugins/tpm" ]; then
+  tmux start-server
+  tmux new-session -d
+  "$HOME/.tmux/plugins/tpm/bin/install_plugins"
+  tmux kill-server
 fi
 
 echo "Installing Vim plug"

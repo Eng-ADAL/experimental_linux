@@ -1,0 +1,11 @@
+git
+build-essential
+autoconf
+automake
+libtool
+pkg-config
+libfuse3-dev
+libplist-dev
+libimobiledevice-dev
+libssl-dev
+curl

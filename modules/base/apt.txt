@@ -1,0 +1,18 @@
+# core CLI
+git
+vim
+tmux
+zsh
+
+# utilities
+ripgrep
+fd-find
+bat
+tree
+htop
+curl
+wget
+gpg
+p7zip-full
+direnv
+fzf

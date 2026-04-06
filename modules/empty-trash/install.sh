@@ -1,27 +1,20 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-INSTALL_PATH="/usr/local/bin/empty-trash"
+MODULE_DIR="$(cd "$(dirname "$0")" && pwd)"
+ROOT_DIR="$(cd "$MODULE_DIR/../.." && pwd)"
 
-echo "Installing empty-trash..."
+APT_MANIFEST="$MODULE_DIR/apt.txt"
+INSTALL_PACKAGES="$ROOT_DIR/scripts/install_packages.sh"
 
-# Detect package manager
-if command -v apt >/dev/null 2>&1; then
-    echo "Installing dependencies..."
-    sudo apt update
-    sudo apt install -y trash-cli tree
-else
-    echo "Warning: Unsupported package manager."
-    echo "Please install dependencies manually:"
-    echo "  trash-cli"
-    echo "  tree"
-fi
+echo "[empty-trash] installing dependencies"
 
-echo "Installing script to $INSTALL_PATH"
+bash "$INSTALL_PACKAGES" "$APT_MANIFEST"
 
-sudo install -m 755 bin/empty-trash "$INSTALL_PATH"
+echo "[empty-trash] installing binary"
 
-echo
-echo "Installation complete."
-echo "Run with:"
-echo "  empty-trash"
+sudo install -Dm755 \
+  "$MODULE_DIR/empty-trash" \
+  /usr/local/bin/empty-trash
+
+echo "[empty-trash] installed successfully"

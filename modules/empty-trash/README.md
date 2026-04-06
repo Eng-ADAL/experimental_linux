@@ -40,7 +40,7 @@ sudo apt install trash-cli tree
 Clone the repository:
 
 ```bash
-git clone https://github.com/Eng-ADAL/experiemental_linux/empty-trash.git
+git clone https://github.com/Eng-ADAL/experimental_linux/modules/empty-trash.git
 cd empty-trash
 ```
 

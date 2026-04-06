@@ -1,9 +1,30 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Version
+VERSION="0.2.3"
+
 ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
 MODULE_DIR="$ROOT_DIR/modules"
 SCRIPT_DIR="$ROOT_DIR/scripts"
+
+prepare_environment
+
+if [[ "${1:-}" == "--all" ]]; then
+  install_module base
+  install_module dotfiles
+  install_module empty-trash
+  install_module ios-mount
+  install_module i3
+  exit 0
+fi
+
+if [[ "${1:-}" == "--version" ]]; then
+    echo "R-Dev version $VERSION"
+    exit 0
+fi
+
+  
 
 prepare_environment() {
     echo "Preparing environment..."

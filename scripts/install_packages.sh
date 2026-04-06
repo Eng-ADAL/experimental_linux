@@ -8,4 +8,4 @@ echo "Installing packages from $MANIFEST"
 
 sudo apt update
 
-grep -vE '^\s*#|^\s*$' "$MANIFEST" | xargs sudo apt install -y
+grep -vE '^\s*#|^\s*$' "$MANIFEST" | xargs -r sudo apt install -y
