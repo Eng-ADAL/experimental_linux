@@ -20,7 +20,9 @@ if [ -d "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting"
   plugins+=(zsh-syntax-highlighting)
 fi
 
-source "$ZSH/oh-my-zsh.sh"
+if [ -s "$ZSH/oh-my-zsh.sh" ]; then
+  source "$ZSH/oh-my-zsh.sh"
+fi
 
 # ----------------------
 # Preferred editor

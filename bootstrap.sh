@@ -1,12 +1,51 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Version
-VERSION="0.2.3"
+# Error Handling
+trap 'echo; echo "Interrupted."; exit 1' INT
 
+# Version
+VERSION="0.2.5"
 ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
 MODULE_DIR="$ROOT_DIR/modules"
 SCRIPT_DIR="$ROOT_DIR/scripts"
+
+help_bootstrap() {
+echo
+echo "experimental_linux bootstrap $VERSION"
+echo
+echo "Usage:"
+echo "  ./bootstrap.sh           interactive mode"
+echo "  ./bootstrap.sh --all     install everything"
+echo "  ./bootstrap.sh --version show version"
+echo "  ./bootstrap.sh --help    show this help"
+echo
+}
+
+prepare_environment() {
+    echo "Preparing environment..."
+    [[ -d "$MODULE_DIR" ]] || { echo "Modules directory missing"; exit 1; }
+    [[ -d "$SCRIPT_DIR" ]] || { echo "Scripts directory missing"; exit 1; }
+
+    chmod +x "$ROOT_DIR/bootstrap.sh"
+    # make all helper scripts executable
+    find "$SCRIPT_DIR" -type f -name "*.sh" -exec chmod +x {} \;
+    # make all module installers executable
+    find "$MODULE_DIR" -type f -name "install.sh" -exec chmod +x {} \;
+}
+
+install_module() {
+    local module=$1
+    if [[ -f "$MODULE_DIR/$module/install.sh" ]]; then
+        echo
+        echo "==> Installing $module"
+        echo
+        bash "$MODULE_DIR/$module/install.sh"
+    else
+        echo "Module $module not found."
+    fi
+}
+
 
 prepare_environment
 
@@ -24,26 +63,21 @@ if [[ "${1:-}" == "--version" ]]; then
     exit 0
 fi
 
-  
 
-prepare_environment() {
-    echo "Preparing environment..."
+if [[ "${1:-}" == "--help" ]]; then
+    help_bootstrap
+    exit 0
+fi
 
-    chmod +x "$ROOT_DIR/bootstrap.sh"
-
-    # make all helper scripts executable
-    find "$SCRIPT_DIR" -type f -name "*.sh" -exec chmod +x {} \;
-
-    # make all module installers executable
-    find "$MODULE_DIR" -type f -name "install.sh" -exec chmod +x {} \;
-}
 
 print_menu() {
 echo
-echo "experimental_linux bootstrap"
-echo "--------------------------------"
+echo " ╔══════════════════════════════════╗"
+echo " ║   experimental_linux bootstrap   ║"
+echo " ╚══════════════════════════════════╝"
+echo
 echo "  Repo root: $ROOT_DIR"
-echo "--------------------------------"
+echo
 echo "1) Base CLI tools"
 echo "2) Dotfiles"
 echo "3) i3 desktop environment"
@@ -53,25 +87,13 @@ echo
 echo "a) Install everything"
 echo "q) Quit"
 echo
+echo "h) help"
+echo
 }
 
-
-install_module() {
-    local module=$1
-
-    if [[ -f "$MODULE_DIR/$module/install.sh" ]]; then
-        echo
-        echo "==> Installing $module"
-        echo
-        bash "$MODULE_DIR/$module/install.sh"
-    else
-        echo "Module $module not found."
-    fi
-}
 
 
 while true; do
-
 print_menu
 read -rp "Select option: " choice
 
@@ -98,6 +120,9 @@ install_module i3
 install_module empty-trash
 install_module ios-mount
 ;;
+h)
+help_bootstrap
+;;
 q)
 exit 0
 ;;
@@ -105,5 +130,4 @@ exit 0
 echo "Invalid option"
 ;;
 esac
-
 done

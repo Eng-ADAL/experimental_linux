@@ -2,6 +2,10 @@
 set -e
 
 echo "BOOTSTRAP: experimental_linux starting"
+echo " "
+echo "for more information --help"
+
+ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 PACKAGES=(
   git vim tmux zsh
@@ -14,14 +18,16 @@ sudo apt update
 sudo apt install -y "${PACKAGES[@]}"
 
 echo "Linking dotfiles"
-ln -sf "$PWD/configs/vim/vimrc" ~/.vimrc
-ln -sf "$PWD/configs/tmux/tmux.conf" ~/.tmux.conf
-ln -sf "$PWD/configs/zsh/zshrc" ~/.zshrc
-ln -sf "$PWD/configs/git/gitconfig" ~/.gitconfig
+ln -sf "$ROOT_DIR/configs/vim/vimrc" ~/.vimrc
+ln -sf "$ROOT_DIR/configs/tmux/tmux.conf" ~/.tmux.conf
+ln -sf "$ROOT_DIR/configs/zsh/zshrc" ~/.zshrc
+if [ -f "$ROOT_DIR/configs/git/gitconfig" ]; then
+  ln -sf "$ROOT_DIR/configs/git/gitconfig" ~/.gitconfig
+fi
 
 echo "Setting up gitconfig"
-if [ -f "$PWD/config/gitconfig" ]; then
-  ln -sf "$PWD/config/gitconfig" ~/.gitconfig
+if [ -f "$ROOT_DIR/config/gitconfig" ]; then
+  ln -sf "$ROOT_DIR/config/gitconfig" ~/.gitconfig
 fi
 
 echo "Installing TPM (tmux plugin manager)"

@@ -18,7 +18,7 @@ This repo is meant to make a fresh Debian install usable quickly without turning
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Eng-ADAL/experimental_linux/main/install.sh | bash
-````
+```
 
 ### Manual install
 

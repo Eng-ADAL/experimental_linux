@@ -28,21 +28,22 @@ The following packages are required:
 - `tree`
 
 On Debian/Ubuntu systems you can install them with:
-
+```markdown
 ```bash
 sudo apt install trash-cli tree
-````
+```
 
 ---
 
 ## Installation
 
-Clone the repository:
+Clone the main repository, 
+then go to `modules/empty-trash`:
 
-```bash
-git clone https://github.com/Eng-ADAL/experimental_linux/modules/empty-trash.git
-cd empty-trash
 ```
+git clone https://github.com/Eng-ADAL/experimental_linux
+```
+
 
 Run the installer:
 
