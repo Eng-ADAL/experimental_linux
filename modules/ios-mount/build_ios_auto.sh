@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 # -----------------------------------------------------------------------------
 # Master iPhone iPad Setup Script for Linux
 #
@@ -27,6 +28,10 @@
 
 set -euo pipefail
 
+# ---------- Users ----------
+REAL_USER=${SUDO_USER:-$USER}
+REAL_HOME=$(eval echo "~$REAL_USER")
+
 # ---------- Colored output ----------
 info() { echo -e "\e[34m[INFO]\e[0m $1"; }
 success() { echo -e "\e[32m[SUCCESS]\e[0m $1"; }
@@ -39,8 +44,8 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 # ---------- Variables ----------
-MOUNT_DIR="$HOME/iPhone"
-ALIAS_FILE="$HOME/.iphone_aliases.sh"
+MOUNT_DIR="$REAL_HOME/iPhone"
+ALIAS_FILE="$REAL_HOME/.iphone_aliases.sh"
 
 # ---------- Install dependencies ----------
 info "Updating package list..."
@@ -111,7 +116,7 @@ EOF
 
 # Ensure shell loads aliases
 if ! grep -q ".iphone_aliases.sh" "$HOME/.zshrc" 2>/dev/null; then
-    echo "source $ALIAS_FILE" >> "$HOME/.zshrc"
+    sudo -u "$REAL_USER" bash -c "echo 'source $ALIAS_FILE' >> $REAL_HOME/.zshrc"
     info "Aliases will be available in new shell sessions."
 fi
 

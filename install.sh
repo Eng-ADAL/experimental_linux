@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
+
+# Error Handling
+trap 'echo; echo "Interrupted."; exit 1' INT
 
 echo "BOOTSTRAP: experimental_linux starting"
 echo " "
@@ -21,13 +24,10 @@ echo "Linking dotfiles"
 ln -sf "$ROOT_DIR/configs/vim/vimrc" ~/.vimrc
 ln -sf "$ROOT_DIR/configs/tmux/tmux.conf" ~/.tmux.conf
 ln -sf "$ROOT_DIR/configs/zsh/zshrc" ~/.zshrc
-if [ -f "$ROOT_DIR/configs/git/gitconfig" ]; then
-  ln -sf "$ROOT_DIR/configs/git/gitconfig" ~/.gitconfig
-fi
 
 echo "Setting up gitconfig"
-if [ -f "$ROOT_DIR/config/gitconfig" ]; then
-  ln -sf "$ROOT_DIR/config/gitconfig" ~/.gitconfig
+if [ -f "$ROOT_DIR/configs/git/gitconfig" ]; then
+  ln -sf "$ROOT_DIR/configs/git/gitconfig" ~/.gitconfig
 fi
 
 echo "Installing TPM (tmux plugin manager)"

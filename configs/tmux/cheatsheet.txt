@@ -1,0 +1,68 @@
+TMUX CHEATSHEET
+===============
+
+Quick controls
+--------------
+Prefix key: Ctrl + b    (can be change at ~/.tmux.conf)
+
+Prefix + r   Reload tmux config
+Prefix + R   Refresh client display
+Prefix + h   Open this cheatsheet popup
+
+Pane navigation
+---------------
+Ctrl + Alt + h   Move left
+Ctrl + Alt + j   Move down
+Ctrl + Alt + k   Move up
+Ctrl + Alt + l   Move right
+
+Ctrl + Alt + Arrow keys also work:
+- ↑ Up
+- ↓ Down
+- ← Left
+- → Right
+
+Pane resizing
+-------------
+Prefix + H   Resize pane left by 5
+Prefix + J   Resize pane down by 5
+Prefix + K   Resize pane up by 5
+Prefix + L   Resize pane right by 5
+
+Window navigation
+-----------------
+Alt + 1   Go to window 1
+Alt + 2   Go to window 2
+Alt + 3   Go to window 3
+Alt + 4   Go to window 4
+Alt + 5   Go to window 5
+Alt + 6   Go to window 6
+Alt + 7   Go to window 7
+Alt + 8   Go to window 8
+Alt + 9   Go to window 9
+Alt + 0   Go to window 0
+
+Alt + h   Previous window
+Alt + l   Next window
+
+Copy mode
+---------
+tmux uses vi-style copy mode.
+
+Inside copy mode:
+v    Start selection
+y    Copy selection and exit
+Enter Copy selection and exit
+
+ctrl + c and ctrl + v also works globally
+
+Splits and windows
+------------------
+Prefix + |   Split pane horizontally
+Prefix + -   Split pane vertically
+Prefix + c   Create new window in current path
+
+Traditional tmux defaults are also available:
+Prefix + %   Horizontal split
+Prefix + "   Vertical split
+
