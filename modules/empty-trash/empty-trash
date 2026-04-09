@@ -5,7 +5,7 @@ set -euo pipefail
 trap 'echo; echo "Interrupted."; exit 1' INT
 
 # Version
-VERSION="0.2.3"
+VERSION="0.2.5"
 
 if [[ "${1:-}" == "--version" ]]; then
     echo "empty-trash version $VERSION"

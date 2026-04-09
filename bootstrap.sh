@@ -5,7 +5,7 @@ set -euo pipefail
 trap 'echo; echo "Interrupted."; exit 1' INT
 
 # Version
-VERSION="0.2.5"
+VERSION="0.2.7"
 ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
 MODULE_DIR="$ROOT_DIR/modules"
 SCRIPT_DIR="$ROOT_DIR/scripts"

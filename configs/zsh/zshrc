@@ -1,9 +1,25 @@
-# ~/.zshrc – pragmatic, fast, no nonsense
+# ~/.zshrc
+# =====================================================================
+#
+#                                  github
+#                                 @Eng-ADAL
+#                                ¯\\_(ツ)_/¯
+#
+# =====================================================================
+#                          Enterprise Grad ZSH (.zshrc)
+# =====================================================================
+
 
 # ----------------------
 # PATH early and clean
 # ----------------------
-export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+typeset -U path
+path=(
+  $HOME/.local/bin
+  $HOME/bin
+  $path
+)
+export PATH
 
 # ----------------------
 # Oh My Zsh
@@ -35,33 +51,51 @@ else
   export EDITOR='nano'
 fi
 
-
-# ----------------------
-# GPG key
-# ----------------------
-export GPG_TTY=$(tty)
-
-
 # ----------------------
 # Command Shortener
 # ----------------------
-# BatCat  cool cat
+# BatCat cool cat
 alias bat=batcat
 # fdfind finder
-alias fd=fdfind
+command -v fdfind >/dev/null && alias fd=fdfind
 
 # ----------------------
 # tmux helpers
 # ----------------------
-alias tat="tmux attach"
-alias tatt="tmux attach -t"
-alias tnew="tmux new -s main"
+alias ta='tmux attach'
+alias tat='tmux attach -t'
+alias tn='tmux new -s'
+alias tls='tmux ls'
+alias tk='tmux kill-session -t'
+
+# ----------------------
+# Iphone moun/unmount/directory 
+# ----------------------
+# Mount and enter iPhone folder
+alias imount='mkdir -p ~/iPhone && (mount | grep -q ~/iPhone && echo "Already mounted" || ifuse ~/iPhone) && cd ~/iPhone'
+# Unmount cleanly
+alias iumount='fusermount3 -u ~/iPhone 2>/dev/null || fusermount -u ~/iPhone 2>/dev/null || sudo umount -l ~/iPhone'
+# Quick cd into iPhone folder
+alias cdiph='cd ~/iPhone'
+
 
 # ----------------------
 # File tools
 # ----------------------
 alias tree="tree -I '*venv*|*__pycache__*'"
-alias trea="tree -a -I '*venv*|*__pycache__*'"
+alias trea="tree -a -I '*venv*|*__pycache__*|*.git*|*direnv*'"
+
+# Make directory and change directory
+mkcd() {
+  mkdir -p "$1" && cd "$1"
+}
+
+# ----------------------
+# Safer file operations
+#----------------------
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
 
 # ----------------------
 # Git shortcuts
@@ -76,6 +110,8 @@ alias gl='git pull'
 # ----------------------
 # Clipboard sanity (tmux + Linux)
 # ----------------------
+
+# GPG key
 export GPG_TTY=$(tty)
 
 # Use correct TERM outside tmux
@@ -90,8 +126,35 @@ if [[ -n $TMUX ]]; then
 fi
 
 # ----------------------
-# Personal aliases
+# Personal aliases and functions
 # ----------------------
+
+# Run joplin from terminal
 alias joplin='flatpak run net.cozic.joplin_desktop'
+
+# start X session manually
 alias s='startx'
+
+# dump directory and files
+dumpdir() {
+  local IGNORE_DIRS='.git|node_modules|__pycache__|venv'
+
+  tree -a -I "$IGNORE_DIRS"
+  echo
+
+  rg --files \
+    -g '!.git/*' \
+    -g '!node_modules/*' \
+    -g '!__pycache__/*' \
+    -g '!venv/*' |
+  while read -r file; do
+    if file "$file" | grep -q text; then
+      echo "===== $file ====="
+      cat "$file"
+      echo
+    fi
+  done
+}
+
+eval "$(direnv hook zsh)"
 
