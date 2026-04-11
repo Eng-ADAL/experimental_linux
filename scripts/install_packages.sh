@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-MANIFEST=$1
+MANIFEST="$1"
 
 echo
 echo "Installing packages from $MANIFEST"
 
-sudo apt update
+sudo apt-get update
 
-grep -vE '^\s*#|^\s*$' "$MANIFEST" | xargs -r sudo apt install -y
+mapfile -t packages < <(grep -vE '^\s*#|^\s*$' "$MANIFEST")
+sudo apt install -y "${packages[@]}"

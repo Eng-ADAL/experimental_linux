@@ -9,8 +9,12 @@ VERSION="0.2.7"
 ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
 MODULE_DIR="$ROOT_DIR/modules"
 SCRIPT_DIR="$ROOT_DIR/scripts"
+APT_MANIFEST="$ROOT_DIR/modules/base/apt.txt"
+
 
 help_bootstrap() {
+echo
+echo "          ───────────────────────────────────────────── "
 echo
 echo "experimental_linux bootstrap $VERSION"
 echo
@@ -19,6 +23,17 @@ echo "  ./bootstrap.sh           interactive mode"
 echo "  ./bootstrap.sh --all     install everything"
 echo "  ./bootstrap.sh --version show version"
 echo "  ./bootstrap.sh --help    show this help"
+echo
+echo " Base CLI tools:"
+echo "[base] packages to install:"
+grep -vE '^\s*#|^\s*$' "$APT_MANIFEST" | sed 's/^/  - /'
+echo
+echo " Dotfiles:               Vim - TMUX - Git - ZSH"
+echo " i3 desktop environment: Install i3 tiling manager and environment packages"
+echo " empty-trash utility:    Install trash bin app for smart deletion and recovery"
+echo " iOS mount tools:        Install iOS (Iphone/Ipad) mount app"
+echo
+echo "          ───────────────────────────────────────────── "
 echo
 }
 
@@ -91,9 +106,7 @@ echo "h) help"
 echo
 }
 
-
-
-while true; do
+#while true; do
 print_menu
 read -rp "Select option: " choice
 
@@ -130,4 +143,4 @@ exit 0
 echo "Invalid option"
 ;;
 esac
-done
+#done
