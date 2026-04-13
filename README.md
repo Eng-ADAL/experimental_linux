@@ -1,24 +1,51 @@
 # experimental_linux
 
-A small Debian workstation setup for i3, tmux, Vim, Zsh, and a few custom tools.
+A modular Debian workstation bootstrap designed for reproducibility, clarity, and control.
 
-This repo is meant to make a fresh Debian install usable quickly without turning it into a mess.
+This project provisions a clean Linux environment with a focus on simplicity, transparency, and maintainability.
+
+---
 
 ## What it installs
 
-- base CLI tools
-- dotfiles
-- i3 desktop packages
-- `empty-trash`
-- iOS mount helpers
+* Base CLI tools
+* Dotfiles (Git, tmux, Vim, Zsh)
+* Optional modules (currently gated):
+
+  * i3 desktop environment
+  * empty-trash utility
+  * iOS mount helpers
+
+---
+
+## Project Status
+
+This project is actively evolving.
+
+### Stable modules
+
+* base
+* dotfiles
+
+### Temporarily disabled modules
+
+These exist in the repository but are not enabled in the installer until fully validated:
+
+* i3
+* empty-trash
+* ios-mount
+
+---
 
 ## How to use it
 
-### Fast install
+### Quick install (one-liner)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Eng-ADAL/experimental_linux/main/install.sh | bash
 ```
+
+---
 
 ### Manual install
 
@@ -28,21 +55,36 @@ cd experimental_linux
 bash install.sh
 ```
 
-### Interactive bootstrap
+---
 
-If you want to pick modules one by one:
+### Interactive install
 
 ```bash
-bash bootstrap.sh
+bash install.sh
 ```
 
-Note: This repo still **under construction**
+Select modules from the menu.
+
+Note: some modules are temporarily disabled until validation is complete.
+
+---
+
+### Non-interactive install (automation / CI)
+
+```bash
+bash install.sh --all -y
+```
+
+Environment flags:
+
+* `AUTO_YES=true` → skip confirmations
+
+---
 
 ## Repository layout
 
 ```text
 experimental_linux/
-├── bootstrap.sh
 ├── install.sh
 ├── README.md
 ├── LICENSE
@@ -65,15 +107,8 @@ experimental_linux/
 │   ├── dotfiles/
 │   │   └── install.sh
 │   ├── empty-trash/
-│   │   ├── apt.txt
-│   │   ├── empty-trash
-│   │   └── install.sh
 │   ├── ios-mount/
-│   │   ├── apt.txt
-│   │   └── build_ios_auto.sh
 │   └── i3/
-│       ├── apt.txt
-│       └── install.sh
 │
 └── scripts/
     ├── install_packages.sh
@@ -81,77 +116,141 @@ experimental_linux/
     └── link_config.sh
 ```
 
+---
+
 ## Modules
 
 ### base
 
-Core CLI packages and general workstation tools.
+Core CLI tooling and utilities.
+
+Installed via manifest:
+
+* git, vim, tmux, zsh
+* ripgrep, fd, bat, curl, wget
+* tree, htop, direnv, fzf, etc.
+
+---
 
 ### dotfiles
 
-Links config files into place for:
+Manages configuration for:
 
-* Git
-* tmux
+* Git (via include.path, non-destructive)
+* tmux (with TPM automation)
 * Vim
 * Zsh
 
-### empty-trash
+Features:
 
-A small utility for checking and emptying the user trash folder.
+* Idempotent symlink creation
+* Backup of existing configs
+* Optional non-interactive overwrite mode
 
-Usage:
+---
 
-```bash
-empty-trash
-empty-trash --list
-empty-trash --clean
-empty-trash --version
-```
+### empty-trash (disabled)
 
-### ios-mount
+Utility for safe inspection and cleanup of the Linux trash directory.
 
-Helper scripts for mounting an iPhone or iPad from Linux.
+---
 
-### i3
+### ios-mount (disabled)
 
-Packages and setup for the i3 window manager environment.
+Automates:
 
-## Config files
+* iPhone pairing
+* ifuse build and install
+* Mount workflow + shell aliases
 
-The main config files live under `configs/`:
+---
 
-* `configs/git/gitconfig`
-* `configs/tmux/tmux.conf`
-* `configs/vim/vimrc`
-* `configs/zsh/zshrc`
+### i3 (disabled)
 
-These are linked into the home directory by the dotfiles module.
+Installs i3 window manager and related desktop tooling.
+
+---
+
+## Design Principles
+
+* Idempotent
+  Safe to run multiple times without breaking the system
+
+* Modular
+  Each module installs independently
+
+* Transparent
+  All packages defined in manifests
+
+* Minimal
+  No hidden side effects
+
+* Recoverable
+  Existing configs are backed up automatically
+
+---
+
+## Key Features
+
+* Manifest-driven package installation (APT + Flatpak)
+* Modular bootstrap architecture
+* TPM (tmux plugin manager) auto-install and plugin bootstrap
+* Interactive and non-interactive modes
+* Environment-aware execution (AUTO_YES support)
+* Clean logging and error handling
+
+---
 
 ## Requirements
 
 Tested on Debian 13.
 
-You will need:
+Required:
 
-* `sudo`
-* `curl`
-* `git`
+* sudo
+* curl
+* git
 
-## Notes
+---
 
-* `bootstrap.sh` is for module-by-module installation.
-* `install.sh` is the quick setup path.
-* `modules/*.txt` files list package dependencies for each module.
+## Known Limitations
+
+* No dependency resolution between modules yet
+* No uninstall mechanism
+* Some modules not validated across multiple environments
+* Dry-run mode not fully implemented
+
+---
 
 ## Roadmap
 
-Planned work:
+Planned improvements:
 
-* module dependency handling
-* non-interactive install mode
-* better uninstall support
+* Module dependency graph
+* `--module <name>` CLI flag
+* Proper dry-run mode
+* Uninstall support
+* Cross-distro compatibility
+* CI pipeline for validation
+
+---
+
+## Why this project exists
+
+Most Linux setup scripts degrade into fragile.
+
+This project treats system setup like software engineering:
+
+* versioned
+* modular
+* testable
+* reproducible
+
+The goal is a reliable, repeatable workstation bootstrap that scales beyond a single machine.
+
+---
 
 ## License
 
 MIT
+
