@@ -1,0 +1,38 @@
+# sway
+sway
+swaybg
+swayidle
+swaylock
+waybar
+wofi
+foot
+mako-notifier
+
+# networking
+network-manager
+network-manager-gnome
+
+# audio
+pipewire
+wireplumber
+pipewire-pulse
+pavucontrol
+
+# utilities
+brightnessctl
+playerctl
+wl-clipboard
+grim
+slurp
+
+# portal
+xdg-desktop-portal-wlr
+
+# fonts
+fonts-noto
+fonts-font-awesome
+
+# firmware
+firmware-linux
+firmware-iwlwifi
+firmware-sof-signed

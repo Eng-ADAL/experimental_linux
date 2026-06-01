@@ -7,13 +7,19 @@ ROOT_DIR="$(cd "$MODULE_DIR/../.." && pwd)"
 APT_MANIFEST="$MODULE_DIR/apt.txt"
 INSTALL_PACKAGES="$ROOT_DIR/scripts/install_packages.sh"
 
+APT_CMD=""
+
+if [[ $EUID -ne 0 ]]; then
+    APT_CMD="sudo"
+fi
+
 echo "[empty-trash] installing dependencies"
 
 bash "$INSTALL_PACKAGES" "$APT_MANIFEST"
 
 echo "[empty-trash] installing binary"
 
-sudo install -Dm755 \
+$APT_CMD install -Dm755 \
   "$MODULE_DIR/empty-trash" \
   /usr/local/bin/empty-trash
 

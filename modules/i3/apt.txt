@@ -12,3 +12,10 @@ lxappearance
 rofi
 picom
 alacritty
+
+# network and media
+network-manager
+network-manager-gnome
+pulseaudio-utils
+brightnessctl
+playerctl

@@ -8,19 +8,14 @@ Prefix key: Ctrl + b    (can be change at ~/.tmux.conf)
 Prefix + r   Reload tmux config
 Prefix + R   Refresh client display
 Prefix + h   Open this cheatsheet popup
+Prefix + ?   Open tmux original cheatsheet
 
-Pane navigation
----------------
-Ctrl + Alt + h   Move left
-Ctrl + Alt + j   Move down
-Ctrl + Alt + k   Move up
-Ctrl + Alt + l   Move right
-
-Ctrl + Alt + Arrow keys also work:
-- ↑ Up
-- ↓ Down
-- ← Left
-- → Right
+Pane navigation      |    Arrow keys also work:
+---------------           ---------------------
+Alt + h   Move left         ←
+Alt + j   Move down         ↓
+Alt + k   Move up           ↑
+Alt + l   Move right        →
 
 Pane resizing
 -------------
@@ -42,8 +37,8 @@ Alt + 8   Go to window 8
 Alt + 9   Go to window 9
 Alt + 0   Go to window 0
 
-Alt + h   Previous window
-Alt + l   Next window
+Ctrl + Alt + h   Previous window
+Ctrl + Alt + l   Next window
 
 Copy mode
 ---------
@@ -56,13 +51,12 @@ Enter Copy selection and exit
 
 ctrl + c and ctrl + v also works globally
 
-Splits and windows
-------------------
-Prefix + |   Split pane horizontally
-Prefix + -   Split pane vertically
+Splits and windows                      Defaults are also available
+------------------                      ---------------------------
+Prefix + |   Split pane horizontally                %
+Prefix + -   Split pane vertically                  "
+Prefix + !   Break pane to a new window
 Prefix + c   Create new window in current path
-
-Traditional tmux defaults are also available:
-Prefix + %   Horizontal split
-Prefix + "   Vertical split
+Prefix + x   Kill the active pane
+Prefix + &   Kill current window
 

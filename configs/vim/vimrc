@@ -5,8 +5,19 @@
 "                                ¯\\_(ツ)_/¯
 "
 " =====================================================================
-"                          Enterprise Grad Vim (.vimrc)
+"                          Senior Grad Vim (.vimrc)
 " =====================================================================
+" 
+" After set ~/.vimrc
+" Install pluggins
+" :PlugInstall
+"
+" install Node.js®
+" sudo apt install nodejs npm | for debian/ubuntu apt
+"
+" After plugin installation
+" :CocInstall coc-pyright coc-json coc-tsserver coc-sh coc-yaml coc-clangd
+
 
 set nocompatible
 " keep filetype off until plugin init
@@ -24,7 +35,14 @@ Plug 'tpope/vim-obsession'                              " Session manager
 Plug 'preservim/vim-indent-guides'                      " Visual indent lines
 Plug 'benmills/vimux'                                   " Run shell commands via tmux
 Plug 'christoomey/vim-tmux-navigator'                   " Navigate between vim and tmux panes easily
-Plug 'catppuccin/vim'
+Plug 'morhetz/gruvbox'
+
+" --- Upgrades ---
+Plug 'neoclide/coc.nvim', {'branch': 'release'}         " VSCodium-style intelligence
+Plug 'jiangmiao/auto-pairs'                             " auto-pairs	automatic bracket/quote completion
+Plug 'tpope/vim-commentary'                             " vim-commentary	fast commenting
+Plug 'airblade/vim-gitgutter'                           " gitgutter	git diff signs in gutter
+Plug 'airblade/vim-rooter'                              " auto-detects project root via: .git | package.json | pyproject.toml | etc
 
 call plug#end()
 
@@ -77,6 +95,9 @@ endif
 " =====================================================================
 " Editor preferences
 " =====================================================================
+set hidden
+set updatetime=300
+set completeopt=menuone,noinsert,noselect
 set tabstop=4
 set shiftwidth=4
 set expandtab
@@ -85,6 +106,13 @@ set backspace=indent,eol,start
 set encoding=utf-8
 set fileencoding=utf-8
 filetype plugin indent on
+
+
+" =====================================================================
+" Reduce viminfo pressure for huge tmux restores
+" =====================================================================
+set viminfo='50,<100,s10,h
+
 
 " =====================================================================
 " Visual indentation with safe fallbacks
@@ -98,15 +126,14 @@ else
 endif
 
 " =====================================================================
-" Colours - try catppuccin, else fall back to desert
+" Colours - try gruvbox, else fall back to desert
 " =====================================================================
+set background=dark
 try
-  colorscheme catppuccin
+  colorscheme gruvbox
 catch
   colorscheme desert
 endtry
-
-
 
 " =====================================================================
 " Leader key
@@ -128,8 +155,8 @@ nnoremap <silent> <leader>b :Buffers<CR>
 " --- Vimux (run commands in tmux split) ---
 " =====================================================================
 
-" Use shellescape to safely handle filenames with spaces
-nnoremap <silent> <leader>r :call VimuxRunCommand('python3 ' . shellescape(expand("%"), 1))<CR>
+" Use shellescape to safely handle filenames with spaces (update and run)
+nnoremap <silent> <leader>r :update<CR>:call VimuxRunCommand('python3 ' . shellescape(expand("%"), 1))<CR>
 
 " Run command in vim
 nnoremap <silent> <leader>t :VimuxPromptCommand<CR>
@@ -147,14 +174,12 @@ nnoremap <leader>rk :VimuxCloseRunner<CR>
 nnoremap <silent> <leader>rc :call VimuxRunCommand("reset")<CR>
 
 " Launch tiny pane for running code (if not exist)
-let g:VimuxHeight = "30"
+let g:VimuxHeight = "40"
 let g:VimuxOrientation = "h"
-
-
-
 
 " --- Obsession ---
 nnoremap <silent> <leader>s :Obsession<CR>
+
 
 " --- Obsession Save Rule ---
 set sessionoptions=blank,buffers,curdir,folds,help,options,tabpages,winpos,winsize
@@ -162,11 +187,70 @@ set sessionoptions=blank,buffers,curdir,folds,help,options,tabpages,winpos,winsi
 " --- [ESC] Remove Search Highlights ---
 nnoremap <Esc> :nohlsearch<CR><Esc>
 
+
+" --- Split Vim Panes ---
+" Move between Vim splits with Ctrl-h/j/k/l
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+" Create splits quickly
+nnoremap <leader>- :split<CR>
+nnoremap <leader>\| :vsplit<CR>
+
+
+" --- Coc mappings ---
+" Go to definition
+nmap gd <Plug>(coc-definition)
+
+" Go to references
+nmap gr <Plug>(coc-references)
+
+" Rename symbol
+nmap rn <Plug>(coc-rename)
+
+" Hover documentation
+nnoremap K :call CocActionAsync('doHover')<CR>
+
+" Trigger completion manually
+inoremap <silent><expr> <C-Space> coc#refresh()
+
+" TAB completion like VSCode
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? coc#_select_confirm() :
+      \ CheckBackspace() ? "\<TAB>" :
+      \ coc#refresh()
+
+" Shift-TAB navigate backwards
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! CheckBackspace() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+
 " --- vim-indent-guides ---
 let g:indent_guides_enable_on_vim_startup = 1
 let g:indent_guides_auto_colors = 0
-autocmd VimEnter,Colorscheme * hi IndentGuidesOdd  ctermbg=236
-autocmd VimEnter,Colorscheme * hi IndentGuidesEven ctermbg=238
+augroup IndentGuidesColors
+  autocmd!
+  autocmd VimEnter,Colorscheme * hi IndentGuidesOdd  ctermbg=236
+  autocmd VimEnter,Colorscheme * hi IndentGuidesEven ctermbg=238
+augroup END
+
+
+" Show diagnostic under cursor
+nnoremap <silent> <leader>d :call CocActionAsync('diagnosticInfo')<CR>
+
+" Next diagnostic
+nmap <silent> ]d <Plug>(coc-diagnostic-next)
+
+" Previous diagnostic
+nmap <silent> [d <Plug>(coc-diagnostic-prev)
+
+
 
 
 " =====================================================================
@@ -179,61 +263,82 @@ function! ShowCheatsheetFull() abort
   setlocal modifiable
 
   call setline(1, [
-        \ '  ┌───────────────────────────────────────────────────────────────┐',
-        \ '  │      Vim Cheatsheet - quick reference (q or <Space> to exit)  │',
-        \ '  │                                                               │',
-        \ '  │  Modes:                                                       │',
-        \ '  │    i -> insert mode           ESC -> normal mode              │',
-        \ '  │    v -> visual mode                                           │',
-        \ '  │                                                               │',
-        \ '  │  Undo / redo:                                                 │',
-        \ '  │    u -> undo                 <C-r> -> redo                    │',
-        \ '  │                                                               │',
-        \ '  │  Copy & paste:                                                │',
-        \ '  │    y -> yank (copy)          p -> paste                       │',
-        \ '  │    yy -> yank (copy line)                                     │',
-        \ '  │    dd -> delete line         x -> delete character            │',
-        \ '  │                                                               │',
-        \ '  │  Move around:                                                 │',
-        \ '  │    h j k l -> left / down / up / right                        │',
-        \ '  │    gg / G  -> top / bottom                                    │',
-        \ '  │    w / b   -> next / previous word                            │',
-        \ '  │                                                               │',
-        \ '  │  Search:                                                      │',
-        \ '  │    /pattern -> search forward   n / N -> next / previous      │',
-        \ '  │                                                               │',
-        \ '  │  Find and Replace                                             │',
-        \ '  │    :%s/<old>/<new>/g       | gc for globally                  │',
-        \ '  │                                                               │',
-        \ '  │  Splits & Windows:                                            │',
-        \ '  │    :split / :vsplit -> create split                           │',
-        \ '  │    <C-w>w -> switch windows                                   │',
-        \ '  │                                                               │',
-        \ '  │  Plugins (leader = <Space>):                                  │',
-        \ '  │    <Space>n  -> Toggle NERDTree (file explorer)               │',
-        \ '  │    <Space>f  -> FZF file search                               │',
-        \ '  │    <Space>b  -> FZF buffer list                               │',
-        \ '  │                                                               │',
-        \ '  │    <Space>r  -> Vimux: run current file in tmux pane          │',
-        \ '  │    <Space>t  -> Vimux: prompt for command to run in tmux pane │',
-        \ '  │    <Space>rr -> Vimux: Run last command                       │',
-        \ '  │    <Space>rk -> Vimux: Kill runner pane (if needed)           │',
-        \ '  │    <Space>rc -> Vimux: Vipe clean runner pane                 │',
-        \ '  │    <Space>s  -> Obsession: start/stop session tracking        │',
-        \ '  │                                                               │',
-        \ '  │    <Space>?  -> Open this cheatsheet                          │',
-        \ '  │                                                               │',
-        \ '  │  Quit:                                                        │',
-        \ '  │    :q -> quit               :wq -> save & quit                │',
-        \ '  └───────────────────────────────────────────────────────────────┘',
+        \ '  ┌─────────────────────────────────────────────────────────────────────┐',
+        \ '  │ Vim Cheatsheet v3                                   (q or <Space>)  │',
+        \ '  ├─────────────────────────────────────────────────────────────────────┤',
+        \ '  │ Search | Replace                                                    │',
+        \ '  │   /pattern  -> search forward    n / N -> next / previous match     │',
+        \ '  │   :noh      -> clear search highlight or [ESC]                      │',
+        \ '  │   :%s/old/new/gc -> Replace | "c" for confromation %" for al lines  │',
+        \ '  │                                                                     │',
+        \ '  │ Splits / Windows                                                    │',
+        \ '  │   <leader>-   -> horizontal split                                   │',
+        \ '  │   <leader>|   -> vertical split                                     │',
+        \ '  │   <C-h/j/k/l> -> move between Vim splits                            │',
+        \ '  │   <C-w>w      -> next split                                         │',
+        \ '  │   :only       -> close other splits                                 │',
+        \ '  │   :q          -> close current split                                │',
+        \ '  │                                                                     │',
+        \ '  │ Buffers                                                             │',
+        \ '  │   :ls        -> list buffers                                        │',
+        \ '  │   :bn / :bp  -> next / previous buffer                              │',
+        \ '  │   :bd        -> delete buffer                                       │',
+        \ '  │                                                                     │',
+        \ '  │ Files / Search                                                      │',
+        \ '  │   <Space>f   -> FZF file search                                     │',
+        \ '  │   <Space>b   -> FZF buffer list                                     │',
+        \ '  │   <Space>n   -> NERDTree toggle                                     │',
+        \ '  │                                                                     │',
+        \ '  │ Coc / Intelligence                                                  │',
+        \ '  │   gd         -> go to definition                                    │',
+        \ '  │   gr         -> references                                          │',
+        \ '  │   rn         -> rename symbol                                       │',
+        \ '  │   K          -> hover documentation                                 │',
+        \ '  │   ]d / [d    -> next / previous diagnostic                          │',
+        \ '  │   <Space>d   -> diagnostic info under cursor                        │',
+        \ '  │   <Tab>      -> select / trigger completion                         │',
+        \ '  │                                                                     │',
+        \ '  │ Run / Vimux                                                         │',
+        \ '  │   <Space>r   -> save and run current file                           │',
+        \ '  │   <Space>t   -> prompt command in runner pane                       │',
+        \ '  │   <Space>rr  -> run last command                                    │',
+        \ '  │   <Space>rk  -> close runner pane                                   │',
+        \ '  │   <Space>rc  -> reset runner pane                                   │',
+        \ '  │                                                                     │',
+        \ '  │ Sessions                                                            │',
+        \ '  │   <Space>s   -> start / stop Obsession session tracking             │',
+        \ '  │                                                                     │',
+        \ '  │ Quit                                                                │',
+        \ '  │   :q  -> quit current window                 :wq -> save and quit   │',
+        \ '  │   :q! -> quit current window without saving                         │',
+        \ '  │                                                                     │',
+        \ '  │ Modes                                                               │',
+        \ '  │   i   -> insert mode         ESC -> normal mode                     │',
+        \ '  │   v   -> visual mode         V   -> line visual                     │',
+        \ '  │   :   -> command mode                                               │',
+        \ '  │                                                                     │',
+        \ '  │ Editing                                                             │',
+        \ '  │   u   -> undo                <C-r> -> redo                          │',
+        \ '  │   y   -> yank (copy)         p -> paste                             │',
+        \ '  │   yy  -> yank line           dd -> delete line                      │',
+        \ '  │   x   -> delete character    ciw -> change inner word               │',
+        \ '  │                                                                     │',
+        \ '  │ Movement                                                            │',
+        \ '  │   h j k l  -> left / down / up / right                              │',
+        \ '  │   gg / G   -> top / bottom                                          │',
+        \ '  │   w / b    -> next / previous word                                  │',
+        \ '  │   ^ / $    -> line start / line end                                 │',
+        \ '  │                                                                     │',
+        \ '  └─────────────────────────────────────────────────────────────────────┘',
         \ ])
 
-
   setlocal nomodifiable
-  nnoremap <silent><buffer> <Space> :tabclose<CR>
   nnoremap <silent><buffer> q       :tabclose<CR>
+  nnoremap <silent><buffer> <Space> :tabclose<CR>
 endfunction
 
 nnoremap <silent> <leader>? :call ShowCheatsheetFull()<CR>
 
+
+" ---- EOF ----
 

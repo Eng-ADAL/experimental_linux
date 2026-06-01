@@ -146,15 +146,43 @@ dumpdir() {
     -g '!.git/*' \
     -g '!node_modules/*' \
     -g '!__pycache__/*' \
-    -g '!venv/*' |
+    -g '!venv/*' \
+    -g '!env/*' \
+    -g '!.env*' \
+    -g '!*.key' \
+    -g '!*.pem' \
+    -g '!*.crt' \
+    -g '!*.p12' \
+    -g '!*.pfx' \
+    -g '!id_rsa*' \
+    -g '!id_ed25519*' \
+    -g '!*.sqlite' \
+    -g '!*.db' \
+    -g '*.sh' \
+    -g '*.py' \
+    -g '*.md' \
+    -g '*.txt' \
+    -g '*.json' \
+    -g '*.yaml' \
+    -g '*.yml' \
+    -g '*.toml' \
+    -g '*.conf' \
+    -g '*.cfg' |
   while read -r file; do
+
+    # skip large files
+    if [ "$(stat -c%s "$file")" -gt 200000 ]; then
+      continue
+    fi
+
+    # only dump text
     if file "$file" | grep -q text; then
       echo "===== $file ====="
       cat "$file"
       echo
     fi
+
   done
 }
 
 eval "$(direnv hook zsh)"
-

@@ -8,10 +8,14 @@ APT_MANIFEST="$MODULE_DIR/apt.txt"
 INSTALL_PACKAGES="$ROOT_DIR/scripts/install_packages.sh"
 
 echo
-echo "[i3] installing packages"
+echo "[sway] installing packages"
 echo
 
 bash "$INSTALL_PACKAGES" "$APT_MANIFEST"
+
+echo
+echo "[sway] enabling services"
+echo
 
 if [[ $EUID -eq 0 ]]; then
   systemctl enable NetworkManager
@@ -21,4 +25,5 @@ else
   sudo systemctl enable fstrim.timer
 fi
 
-echo "[i3] done"
+echo
+echo "[sway] done"

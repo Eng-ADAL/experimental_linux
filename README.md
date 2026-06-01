@@ -1,83 +1,103 @@
+![GitHub release](https://img.shields.io/github/v/release/Eng-ADAL/experimental_linux?label=release)
+![Bash](https://img.shields.io/badge/Bash-Script-4EAA25?logo=gnu-bash&logoColor=white)
+![License](https://img.shields.io/github/license/Eng-ADAL/experimental_linux)
+
 # experimental_linux
 
-A modular Debian workstation bootstrap designed for reproducibility, clarity, and control.
+A modular Debian workstation bootstrap for reproducible, explicit, and maintainable Linux setup.
 
-This project provisions a clean Linux environment with a focus on simplicity, transparency, and maintainability.
+The project is designed to take a fresh Debian system and turn it into a usable workstation with:
 
----
+- base CLI tools
+- dotfiles
+- optional desktop environments
+- custom utilities
+- a later welcome and onboarding flow
 
-## What it installs
-
-* Base CLI tools
-* Dotfiles (Git, tmux, Vim, Zsh)
-* Optional modules (currently gated):
-
-  * i3 desktop environment
-  * empty-trash utility
-  * iOS mount helpers
+The layout is intentionally modular. Each component lives in its own module and is installed in a fixed order.
 
 ---
 
-## Project Status
+## Current status
 
-This project is actively evolving.
+The project is actively evolving.
 
 ### Stable modules
 
-* base
-* dotfiles
+- `base`
+- `dotfiles`
 
-### Temporarily disabled modules
+### Available desktop modules
 
-These exist in the repository but are not enabled in the installer until fully validated:
+- `i3`
+- `sway`
 
-* i3
-* empty-trash
-* ios-mount
+### Existing but still being refined
+
+- `empty-trash`
+- `ios-mount`
 
 ---
 
-## How to use it
+## Installation flow
 
-### Quick install (one-liner)
+There are two entry points.
+
+### 1. Fresh Debian bootstrap
+
+This is the machine-first entry point.
+
+It is intended to be run from a clean Debian install, usually from a root shell.
+
+Example:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Eng-ADAL/experimental_linux/main/install.sh | bash
-```
+su -
+wget -qO- https://adal.page/dev/run.sh | bash
+````
 
----
+This script is responsible only for preparing the system and handing off to the repository bootstrap.
 
-### Manual install
+### 2. Repository bootstrap
+
+After the repo is cloned, the main bootstrap can be run directly.
+
+Example:
 
 ```bash
 git clone https://github.com/Eng-ADAL/experimental_linux.git
 cd experimental_linux
-bash install.sh
+bash bootstrap.sh --desktop sway
+```
+
+Or:
+
+```bash
+bash bootstrap.sh --desktop i3
 ```
 
 ---
 
-### Interactive install
+## Scripts
 
-```bash
-bash install.sh
-```
+### `bootstrap.sh`
 
-Select modules from the menu.
+Automated installer for the repository.
 
-Note: some modules are temporarily disabled until validation is complete.
+It installs:
 
----
+* `base`
+* `dotfiles`
+* either `sway` or `i3`
+* the next-step handoff script
 
-### Non-interactive install (automation / CI)
+This is the non-interactive path.
 
-```bash
-bash install.sh --all -y
-```
+### `install.sh`
 
-Environment flags:
+Interactive menu-based installer.
 
-* `AUTO_YES=true` → skip confirmations
+This is for manual selection of modules during development or testing.
 
 ---
 
@@ -85,6 +105,7 @@ Environment flags:
 
 ```text
 experimental_linux/
+├── bootstrap.sh
 ├── install.sh
 ├── README.md
 ├── LICENSE
@@ -92,6 +113,7 @@ experimental_linux/
 ├── configs/
 │   ├── git/gitconfig
 │   ├── tmux/tmux.conf
+│   ├── tmux/tmux.cheatsheet.txt
 │   ├── vim/vimrc
 │   └── zsh/zshrc
 │
@@ -100,20 +122,30 @@ experimental_linux/
 │   └── flatpak.txt
 │
 ├── modules/
-│   ├── modules.list
 │   ├── base/
 │   │   ├── apt.txt
 │   │   └── install.sh
 │   ├── dotfiles/
 │   │   └── install.sh
+│   ├── i3/
+│   │   ├── apt.txt
+│   │   └── install.sh
+│   ├── sway/
+│   │   ├── apt.txt
+│   │   └── install.sh
 │   ├── empty-trash/
 │   ├── ios-mount/
-│   └── i3/
+│   └── modules.list
 │
-└── scripts/
-    ├── install_packages.sh
-    ├── install_flatpak.sh
-    └── link_config.sh
+├── scripts/
+│   ├── create_continue_setup.sh
+│   ├── detect_user.sh
+│   ├── install_flatpak.sh
+│   ├── install_packages.sh
+│   └── link_config.sh
+│
+└── welcome/
+    └── welcome.py
 ```
 
 ---
@@ -122,82 +154,71 @@ experimental_linux/
 
 ### base
 
-Core CLI tooling and utilities.
+Core command line tooling and utilities.
 
-Installed via manifest:
+Installs packages such as:
 
-* git, vim, tmux, zsh
-* ripgrep, fd, bat, curl, wget
-* tree, htop, direnv, fzf, etc.
-
----
+* git
+* vim
+* tmux
+* zsh
+* ripgrep
+* fd-find
+* bat
+* tree
+* htop
+* curl
+* wget
+* direnv
+* fzf
 
 ### dotfiles
 
-Manages configuration for:
+Links user configuration for:
 
-* Git (via include.path, non-destructive)
-* tmux (with TPM automation)
+* Git
+* tmux
 * Vim
 * Zsh
 
-Features:
+Also installs TPM for tmux and prepares the tmux plugin environment.
 
-* Idempotent symlink creation
-* Backup of existing configs
-* Optional non-interactive overwrite mode
+### i3
 
----
+Installs an i3 desktop stack for lightweight systems.
 
-### empty-trash (disabled)
+This is intended for older or lower-spec machines where simplicity matters.
 
-Utility for safe inspection and cleanup of the Linux trash directory.
+### sway
 
----
+Installs a Sway Wayland stack for newer systems and better modern input support.
 
-### ios-mount (disabled)
+### empty-trash
 
-Automates:
+A helper utility for managing the Linux trash folder safely.
 
-* iPhone pairing
-* ifuse build and install
-* Mount workflow + shell aliases
+### ios-mount
+
+A helper for iPhone or iPad mounting workflows on Linux.
 
 ---
 
-### i3 (disabled)
-
-Installs i3 window manager and related desktop tooling.
-
----
-
-## Design Principles
-
-* Idempotent
-  Safe to run multiple times without breaking the system
+## Design principles
 
 * Modular
-  Each module installs independently
+  Every feature lives in a separate module.
 
-* Transparent
-  All packages defined in manifests
+* Explicit
+  Installation order is deliberate, not auto-discovered.
 
-* Minimal
-  No hidden side effects
+* Reproducible
+  Package lists live in manifests.
 
 * Recoverable
-  Existing configs are backed up automatically
+  Existing dotfiles are backed up before replacement where appropriate.
 
----
-
-## Key Features
-
-* Manifest-driven package installation (APT + Flatpak)
-* Modular bootstrap architecture
-* TPM (tmux plugin manager) auto-install and plugin bootstrap
-* Interactive and non-interactive modes
-* Environment-aware execution (AUTO_YES support)
-* Clean logging and error handling
+* Practical
+  The project is built for real Debian machines, not theory.
 
 ---
 
@@ -205,48 +226,52 @@ Installs i3 window manager and related desktop tooling.
 
 Tested on Debian 13.
 
-Required:
+Required for the fresh bootstrap path:
 
-* sudo
-* curl
-* git
+* root access or `sudo`
+* internet access
+* `wget`
+
+Useful on the workstation itself:
+
+* `git`
+* `sudo`
+* `curl`
 
 ---
 
-## Known Limitations
+## Current limitations
 
-* No dependency resolution between modules yet
-* No uninstall mechanism
-* Some modules not validated across multiple environments
-* Dry-run mode not fully implemented
+* No uninstall flow yet
+* No dependency graph between modules yet
+* Welcome app is still a placeholder
+* Some optional modules are still being refined
+* Flatpak support exists, but is not yet the main path
 
 ---
 
 ## Roadmap
 
-Planned improvements:
+Planned work includes:
 
-* Module dependency graph
-* `--module <name>` CLI flag
-* Proper dry-run mode
-* Uninstall support
-* Cross-distro compatibility
-* CI pipeline for validation
+* welcome app onboarding
+* first-login setup flow
+* more polished desktop selection
+* module dependency handling
+* better desktop-specific shared config
+* packaging towards a Debian package later on
 
 ---
 
-## Why this project exists
+## Goal
 
-Most Linux setup scripts degrade into fragile.
+The long-term goal is simple:
 
-This project treats system setup like software engineering:
+```bash
+sudo apt install eng-workstation
+```
 
-* versioned
-* modular
-* testable
-* reproducible
-
-The goal is a reliable, repeatable workstation bootstrap that scales beyond a single machine.
+This repository is the path towards that outcome.
 
 ---
 

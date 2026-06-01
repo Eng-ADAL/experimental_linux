@@ -5,7 +5,7 @@ set -euo pipefail
 trap 'echo; echo "Interrupted."; exit 1' INT
 
 # Version
-VERSION="0.2.7"
+VERSION="0.3.0"
 ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
 MODULE_DIR="$ROOT_DIR/modules"
 SCRIPT_DIR="$ROOT_DIR/scripts"
@@ -109,22 +109,22 @@ export AUTO_YES
 
 prepare_environment
 
-# Dry run
-if [[ "${DRY_RUN:-false}" == "true" ]]; then
-  echo "[DRY-RUN] apt install ${packages[*]}"
-  exit 0
-fi
+# Dry run (need maintenance)
+#if [[ "${DRY_RUN:-false}" == "true" ]]; then
+#  echo "[DRY-RUN] apt install ${packages[*]}"
+#  exit 0
+#fi
 
-# Install All interactive
-if [[ "$INSTALL_ALL" == "true" ]]; then
-  while read -r module; do
-    install_module "$module"
-  done < "$MODULE_DIR/modules.list"
-  install_module empty-trash
-  install_module ios-mount
-  install_module i3
-  exit 0
-fi
+# Install All interactive (need maintenance for avoid rewrite)
+#if [[ "$INSTALL_ALL" == "true" ]]; then
+#  while read -r module; do
+#    install_module "$module"
+#  done < "$MODULE_DIR/modules.list"
+#  install_module empty-trash
+#  install_module ios-mount
+#  install_module i3
+#  exit 0
+#fi
 
 #while true; do
 print_menu

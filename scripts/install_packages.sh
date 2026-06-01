@@ -3,6 +3,13 @@ set -euo pipefail
 
 MANIFEST="${1:-}"
 
+APT_CMD="apt-get"
+
+if [[ $EUID -ne 0 ]]; then
+    APT_CMD="sudo apt-get"
+fi
+
+
 if [[ -z "$MANIFEST" || ! -f "$MANIFEST" ]]; then
   echo "[packages] ERROR: manifest not found: $MANIFEST"
   exit 1
@@ -23,10 +30,10 @@ echo
 # Optional optimisation hook
 if [[ "${APT_UPDATED:-false}" != "true" ]]; then
   echo "[packages] apt update"
-  sudo apt-get update
+  $APT_CMD update
   export APT_UPDATED=true
 fi
 
-sudo apt-get install -y "${packages[@]}"
+$APT_CMD install -y "${packages[@]}"
 
 echo "[packages] done"
