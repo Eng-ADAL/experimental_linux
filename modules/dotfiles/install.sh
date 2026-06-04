@@ -22,11 +22,6 @@ AUTO_YES="${AUTO_YES:-false}"
 
 echo "[dotfiles] linking configs"
 
-command -v git >/dev/null || echo "[dotfiles] warning: git not installed"
-command -v tmux >/dev/null || echo "[dotfiles] warning: tmux not installed"
-command -v vim >/dev/null || echo "[dotfiles] warning: vim not installed"
-command -v zsh >/dev/null || echo "[dotfiles] warning: zsh not installed"
-
 link_config() {
   local src="$1"
   local dest="$2"
@@ -54,22 +49,36 @@ link_config() {
   fi
 }
 
-if command -v git >/dev/null; then
-  echo "[dotfiles] configuring git include"
+install_vim_plug() {
+  local target_user="$1"
+  local target_home="$2"
 
-  sudo -u "$TARGET_USER" -H env HOME="$TARGET_HOME" \
-    git config --global --unset-all include.path 2>/dev/null || true
+  sudo -u "$target_user" -H mkdir -p "$target_home/.vim/autoload"
 
-  sudo -u "$TARGET_USER" -H env HOME="$TARGET_HOME" \
-    git config --global --add include.path "$ROOT_DIR/configs/git/gitconfig"
+  if [[ ! -f "$target_home/.vim/autoload/plug.vim" ]]; then
+    sudo -u "$target_user" -H curl -fLo "$target_home/.vim/autoload/plug.vim" \
+      --create-dirs \
+      https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  fi
+}
 
-  echo "[dotfiles] git include configured"
-fi
+for cmd in git curl vim; do
+    command -v "$cmd" >/dev/null || {
+        echo "[dotfiles] missing dependency: $cmd"
+        exit 1
+    }
+done
 
 link_config "$ROOT_DIR/configs/tmux/tmux.conf" "$TARGET_HOME/.tmux.conf"
 link_config "$ROOT_DIR/configs/tmux/tmux.cheatsheet.txt" "$TARGET_HOME/.tmux.cheatsheet.txt"
 link_config "$ROOT_DIR/configs/vim/vimrc" "$TARGET_HOME/.vimrc"
 link_config "$ROOT_DIR/configs/zsh/zshrc" "$TARGET_HOME/.zshrc"
+
+install_vim_plug "$TARGET_USER" "$TARGET_HOME"
+
+echo "[dotfiles] installing vim plugins"
+sudo -u "$TARGET_USER" -H env HOME="$TARGET_HOME" \
+    vim +'PlugInstall --sync' +'qa'
 
 echo "[dotfiles] setting up tmux plugins (TPM)"
 if command -v git >/dev/null; then
@@ -94,3 +103,4 @@ else
 fi
 
 echo "[dotfiles] done"
+

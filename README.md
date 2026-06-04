@@ -107,8 +107,8 @@ This is for manual selection of modules during development or testing.
 experimental_linux/
 ├── bootstrap.sh
 ├── install.sh
-├── README.md
 ├── LICENSE
+├── README.md
 │
 ├── configs/
 │   ├── git/gitconfig
@@ -117,9 +117,9 @@ experimental_linux/
 │   ├── vim/vimrc
 │   └── zsh/zshrc
 │
-├── manifests/
-│   ├── apt-base.txt
-│   └── flatpak.txt
+├── manifests
+│   ├── apt-base.txt
+│   └── flatpak.txt
 │
 ├── modules/
 │   ├── base/
@@ -137,6 +137,7 @@ experimental_linux/
 │   ├── ios-mount/
 │   └── modules.list
 │
+<<<<<<< HEAD
 ├── scripts/
 │   ├── create_continue_setup.sh
 │   ├── detect_user.sh
@@ -145,6 +146,17 @@ experimental_linux/
 │   └── link_config.sh
 │
 └── welcome/
+=======
+├── scripts
+│   ├── create_continue_setup.sh
+│   ├── detect_environment.sh
+│   ├── detect_user.sh
+│   ├── install_flatpak.sh
+│   ├── install_packages.sh
+│   └── link_config.sh
+│
+└── welcome
+>>>>>>> 6614eb8 (Improve dotfiles automation and add optional Oh My Zsh module)
     └── welcome.py
 ```
 
@@ -247,6 +259,16 @@ Useful on the workstation itself:
 * Welcome app is still a placeholder
 * Some optional modules are still being refined
 * Flatpak support exists, but is not yet the main path
+<<<<<<< HEAD
+=======
+
+## Open issues
+* WSL clipboard integration
+* Installation profiles (minimal/developer/full)
+* coc.nvim + Node.js separation
+* Uninstall support
+* Environment-aware modules
+>>>>>>> 6614eb8 (Improve dotfiles automation and add optional Oh My Zsh module)
 
 ---
 

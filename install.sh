@@ -4,8 +4,7 @@ set -euo pipefail
 # Error Handling
 trap 'echo; echo "Interrupted."; exit 1' INT
 
-# Version
-VERSION="0.3.0"
+VERSION="$(cat "$ROOT_DIR/VERSION")"
 ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
 MODULE_DIR="$ROOT_DIR/modules"
 SCRIPT_DIR="$ROOT_DIR/scripts"
@@ -28,6 +27,7 @@ echo "2) Dotfiles"
 echo "3) i3 desktop environment"
 echo "4) empty-trash utility"
 echo "5) iOS mount tools"
+echo "6) oh-my-zsh"
 echo
 echo "a) Install everything"
 echo "q) Quit"
@@ -145,6 +145,9 @@ install_module dotfiles
 ;;
 5)
 #install_module ios-mount
+;;
+6)
+install_module oh-my-zsh
 ;;
 a)
 install_module base
