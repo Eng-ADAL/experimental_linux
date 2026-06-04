@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VERSION="$(cat "$ROOT_DIR/VERSION")"
 ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
+VERSION="$(cat "$ROOT_DIR/VERSION")"
 
 source "$ROOT_DIR/scripts/detect_user.sh"
 
@@ -12,7 +12,6 @@ if [[ -z "$TARGET_USER" ]]; then
   exit 1
 fi
 
-TARGET_HOME="$(getent passwd "$TARGET_USER" | cut -d: -f6)"
 MODULE_DIR="$ROOT_DIR/modules"
 
 DESKTOP=""

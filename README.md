@@ -39,6 +39,8 @@ The project is actively evolving.
 
 ---
 
+![experimental_linux](experimental_linux.png)
+
 ## Installation flow
 
 There are two entry points.
@@ -111,7 +113,6 @@ experimental_linux/
 ├── README.md
 │
 ├── configs/
-│   ├── git/gitconfig
 │   ├── tmux/tmux.conf
 │   ├── tmux/tmux.cheatsheet.txt
 │   ├── vim/vimrc
@@ -137,16 +138,6 @@ experimental_linux/
 │   ├── ios-mount/
 │   └── modules.list
 │
-<<<<<<< HEAD
-├── scripts/
-│   ├── create_continue_setup.sh
-│   ├── detect_user.sh
-│   ├── install_flatpak.sh
-│   ├── install_packages.sh
-│   └── link_config.sh
-│
-└── welcome/
-=======
 ├── scripts
 │   ├── create_continue_setup.sh
 │   ├── detect_environment.sh
@@ -156,7 +147,6 @@ experimental_linux/
 │   └── link_config.sh
 │
 └── welcome
->>>>>>> 6614eb8 (Improve dotfiles automation and add optional Oh My Zsh module)
     └── welcome.py
 ```
 
@@ -188,7 +178,6 @@ Installs packages such as:
 
 Links user configuration for:
 
-* Git
 * tmux
 * Vim
 * Zsh
@@ -259,8 +248,6 @@ Useful on the workstation itself:
 * Welcome app is still a placeholder
 * Some optional modules are still being refined
 * Flatpak support exists, but is not yet the main path
-<<<<<<< HEAD
-=======
 
 ## Open issues
 * WSL clipboard integration
@@ -268,7 +255,6 @@ Useful on the workstation itself:
 * coc.nvim + Node.js separation
 * Uninstall support
 * Environment-aware modules
->>>>>>> 6614eb8 (Improve dotfiles automation and add optional Oh My Zsh module)
 
 ---
 
