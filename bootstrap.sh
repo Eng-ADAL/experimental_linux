@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VERSION="0.3.0"
+VERSION="$(cat "$ROOT_DIR/VERSION")"
 ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 source "$ROOT_DIR/scripts/detect_user.sh"
