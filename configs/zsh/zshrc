@@ -128,6 +128,12 @@ if [[ -n $TMUX ]]; then
   zle -N bracketed-paste bracketed-paste-magic
 fi
 
+# WSL copy.exe copyclip encoding issue fix | comment or delete on Real or VM Linux environment
+copyclip() {
+  iconv -f utf-8 -t utf-16le | clip.exe
+}
+
+
 # ----------------------
 # Personal aliases and functions
 # ----------------------
@@ -137,6 +143,8 @@ alias joplin='flatpak run net.cozic.joplin_desktop'
 
 # start X session manually
 alias s='startx'
+
+
 
 # dump directory and files
 dumpdir() {
@@ -189,3 +197,4 @@ dumpdir() {
 }
 
 eval "$(direnv hook zsh)"
+

@@ -169,6 +169,8 @@ install_module oh-my-zsh
 h)
 help_bootstrap
 read -rp "Press any key to continue menu"
+printf '\n%.0s' {1..50}
+./install.sh
 ;;
 q)
 exit 0
