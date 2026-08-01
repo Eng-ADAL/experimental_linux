@@ -35,5 +35,10 @@ else
   esac
 fi
 
-usermod -aG sudo "$TARGET_USER"
-echo "[sudoer] added $TARGET_USER to sudo"
+
+if id -nG "$TARGET_USER" | grep -qw sudo; then
+    echo "[sudoer] $TARGET_USER is already a sudoer."
+else
+    usermod -aG sudo "$TARGET_USER"
+    echo "[sudoer] Added $TARGET_USER to sudo group."
+fi
