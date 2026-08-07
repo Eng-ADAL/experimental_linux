@@ -14,7 +14,7 @@ fi
 
 MODULE_DIR="$ROOT_DIR/modules"
 
-DESKTOP=""
+PROFILE=""
 AUTO_YES=false
 
 usage() {
@@ -24,13 +24,17 @@ experimental_linux bootstrap $VERSION
 
 Usage:
 
-  ./bootstrap.sh --desktop sway
-  ./bootstrap.sh --desktop i3
+  ./bootstrap.sh --profile sway
+  ./bootstrap.sh --profile i3
+  ./bootstrap.sh --profile auto      (default if nothing is given)
+
+  --desktop sway / --desktop i3 are accepted as legacy aliases for
+  --profile sway / --profile i3.
 
 Options:
 
-  --desktop sway     Install Sway workstation
-  --desktop i3       Install i3 workstation
+  --profile <sway|i3|auto>   Choose what gets installed (default: auto)
+  --desktop <sway|i3>        Legacy alias for --profile
   -y, --yes          Non-interactive mode
   -h, --help         Show help
 
@@ -56,8 +60,12 @@ install_module() {
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
+        --profile)
+           PROFILE="${2:-}"
+           shift 2
+           ;;
         --desktop)
-            DESKTOP="${2:-}"
+            PROFILE="${2:-}"
             shift 2
             ;;
         -y|--yes)
@@ -76,18 +84,15 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-if [[ -z "$DESKTOP" ]]; then
-    echo "[bootstrap] desktop not specified"
-    echo
-    usage
-    exit 1
+if [[ -z "$PROFILE" ]]; then
+    PROFILE="auto"
 fi
 
 export AUTO_YES
 
 echo
 echo "experimental_linux bootstrap"
-echo "desktop: $DESKTOP"
+echo "profile: $PROFILE"
 echo
 
 #
@@ -96,20 +101,29 @@ echo
 
 install_module base
 install_module dotfiles
+install_module oh-my-zsh
 
 #
 # Desktop
 #
 
-case "$DESKTOP" in
+# Profile resolution. Real platform/capability-based auto-detection is
+# not implemented yet, that's a later slice. Until then, auto
+# deliberately installs no desktop, rather than guessing one.
+case "$PROFILE" in
     sway)
         install_module sway
         ;;
     i3)
         install_module i3
         ;;
+    auto)
+    echo "[bootstrap] profile=auto: automatic desktop selection isn't implemented yet."
+    echo "[bootstrap] installing base tools only, no desktop."
+    echo "[bootstrap] use --profile sway or --profile i3 to choose one explicitly."
+    ;;
     *)
-        echo "[bootstrap] unsupported desktop: $DESKTOP"
+        echo "[bootstrap] unsupported profile: $PROFILE"
         exit 1
         ;;
 esac
@@ -122,7 +136,7 @@ if [[ -f "$ROOT_DIR/scripts/create_continue_setup.sh" ]]; then
     bash "$ROOT_DIR/scripts/create_continue_setup.sh"
 fi
 
-# for phase 2 commented out need maintenance with create_continue_setup.sh 
+# for phase 2 commented out need maintenance with create_continue_setup.sh
 # install -o "$TARGET_USER" -g "$TARGET_USER" -m 0644 /dev/null \
 #  "$TARGET_HOME/.eng-workstation-installed"
 

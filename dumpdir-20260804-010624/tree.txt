@@ -1,0 +1,69 @@
+# dumpdir snapshot
+
+- root: /home/eng-adal/PROJECTS_WSL/experimental_linux
+- output: /home/eng-adal/PROJECTS_WSL/experimental_linux/dumpdir-20260804-010624
+- created: 2026-08-04 00:06:24Z
+- host: WIN-HOST
+
+## Git
+
+- branch: refactor/installer
+- commit: a573f46
+- status:
+ M bootstrap.sh
+?? dumpdir-20260804-010624/
+
+## Tree
+
+/home/eng-adal/PROJECTS_WSL/experimental_linux
+├── .gitignore
+├── LICENSE
+├── README.md
+├── VERSION
+├── bootstrap.sh
+├── configs
+│   ├── tmux
+│   │   ├── tmux.cheatsheet.txt
+│   │   └── tmux.conf
+│   ├── vim
+│   │   └── vimrc
+│   └── zsh
+│       └── zshrc
+├── dumpdir-20260804-010624
+│   └── tree.txt
+├── experimental_linux.png
+├── install.sh
+├── manifests
+│   ├── apt-base.txt
+│   └── flatpak.txt
+├── modules
+│   ├── base
+│   │   ├── apt.txt
+│   │   └── install.sh
+│   ├── dotfiles
+│   │   └── install.sh
+│   ├── i3
+│   │   ├── apt.txt
+│   │   └── install.sh
+│   ├── modules.list
+│   ├── oh-my-zsh
+│   │   └── install.sh
+│   └── sway
+│       ├── apt.txt
+│       └── install.sh
+├── scripts
+│   ├── add_sudoer.sh
+│   ├── create_continue_setup.sh
+│   ├── detect_environment.sh
+│   ├── detect_user.sh
+│   ├── diagnostics.sh
+│   ├── install_flatpak.sh
+│   ├── install_packages.sh
+│   └── link_config.sh
+└── welcome
+    └── welcome.py
+
+15 directories, 32 files
+
+## Files
+
