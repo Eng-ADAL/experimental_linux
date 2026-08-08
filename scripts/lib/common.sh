@@ -14,6 +14,13 @@
 # change to this file would require it to know any of those, that
 # change belongs in a later stage instead, not here.
 
+# ---------------------------------------------------------------------------
+# Fail Safe
+# ---------------------------------------------------------------------------
+if [[ -n "${_COMMON_SH_LOADED:-}" ]]; then
+    return 0
+fi
+readonly _COMMON_SH_LOADED=1
 
 readonly _COMMON_SH_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly _REPO_ROOT="$(cd "$_COMMON_SH_DIR/../.." && pwd)"
