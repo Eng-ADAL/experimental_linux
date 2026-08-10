@@ -16,6 +16,7 @@
 [[ -n "${_DETECT_ENVIRONMENT_SH_LOADED:-}" ]] && return
 _DETECT_ENVIRONMENT_SH_LOADED=1
 
+set -euo pipefail
 
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib/common.sh"
 
@@ -125,7 +126,8 @@ detect_bare_metal() {
 # ---------------------------------------------------------------------------
 
 # detect_distro_family
-# Prints: debian | fedora | arch | unknown
+# Prints: debian | fedora | arch | unrecognised (readable, just not
+# one of those three) | unknown (file genuinely unreadable)
 detect_distro_family() {
   if [[ ! -r /etc/os-release ]]; then
     echo "unknown"
@@ -135,7 +137,7 @@ detect_distro_family() {
   local id_info
   id_info="$(
     # shellcheck disable=SC1091
-    . /etc/os-release
+    . /etc/os-release 2>/dev/null || true
     printf '%s %s' "${ID:-}" "${ID_LIKE:-}"
   )"
 
@@ -143,7 +145,7 @@ detect_distro_family() {
     *debian*) echo "debian" ;;
     *fedora*) echo "fedora" ;;
     *arch*)   echo "arch" ;;
-    *)        echo "unknown" ;;
+    *)        echo "unrecognised" ;;
   esac
 }
 
@@ -167,21 +169,24 @@ detect_gpu_device() {
 # available to check at all. Empty is a real, successfully-determined
 # answer, distinct from unknown.
 detect_gpu_modules() {
-    if ! command -v lsmod >/dev/null 2>&1; then
-        echo "unknown"
-        return
-    fi
+  if ! command -v lsmod >/dev/null 2>&1; then
+    echo "unknown"
+    return
+  fi
 
-    local modules
-    modules="$(
-        lsmod |
-            grep -oE "$_KNOWN_GPU_MODULES" || true
-    )"
+  # grep returning no match (empty result) is a legitimate, common
+  # outcome here, not a failure, but it exits non-zero, and that would
+  # abort this function under set -e if inherit_errexit is ever on
+  # (bash does not inherit -e into $() by default, which is the only
+  # reason this "works" today without the || true; do not remove it).
+  local matches
+  matches="$(lsmod | grep -oE "$_KNOWN_GPU_MODULES" | sort -u | tr '\n' ' ' | sed 's/ $//')" || true
 
-    if [[ -n "$modules" ]]; then
-        printf '%s\n' "$modules" | sort -u | tr '\n' ' ' | sed 's/ $//'
-    fi
-    printf '\n'
+  if [[ -z "$matches" ]]; then
+    echo "none"
+  else
+    printf '%s\n' "$matches"
+  fi
 }
 
 # ---------------------------------------------------------------------------
