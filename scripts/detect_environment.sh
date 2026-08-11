@@ -16,8 +16,6 @@
 [[ -n "${_DETECT_ENVIRONMENT_SH_LOADED:-}" ]] && return
 _DETECT_ENVIRONMENT_SH_LOADED=1
 
-set -euo pipefail
-
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib/common.sh"
 
 # Driver modules this project currently knows how to recognise. Not
