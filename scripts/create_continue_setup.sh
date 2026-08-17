@@ -17,7 +17,7 @@ TARGET_HOME="$(getent passwd "$TARGET_USER" | cut -d: -f6)"
 cat > "$TARGET_HOME/Continue_Setup.sh" <<'EOF'
 #!/usr/bin/env bash
 
-MARKER="$HOME/.adal-workstation-installed"
+MARKER="$HOME/.dev-workstation-installed"
 
 if [[ -f "$MARKER" ]]; then
     echo
