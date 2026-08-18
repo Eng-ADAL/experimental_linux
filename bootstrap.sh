@@ -113,6 +113,15 @@ while IFS= read -r _plan_line; do
     _module_rc=$?
     die "bootstrap: module failed: $_plan_line (exit $_module_rc) -- stopping, no further modules will run"
   fi
+
+  if [[ "$_plan_line" == "base" ]]; then
+    if bash "$ROOT_DIR/scripts/add_sudoer.sh"; then
+      :
+    else
+      _sudoer_rc=$?
+      die "bootstrap: add_sudoer.sh failed (exit $_sudoer_rc) -- stopping, no further modules will run"
+    fi
+  fi
 done <<< "$PLAN"
 
 #
