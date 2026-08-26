@@ -106,8 +106,7 @@ while IFS= read -r _plan_line; do
     _first_plan_line=false
     continue
   fi
-
-  if install_module "$_plan_line"; then
+  if install_module "$_plan_line" </dev/null; then
     :
   else
     _module_rc=$?
