@@ -26,15 +26,16 @@ echo
 echo "     1) Base CLI tools"
 echo "     2) Dotfiles"
 echo "     3) oh-my-zsh"
-echo "     4) empty-trash utility        (coming soon)"
-echo "     5) iOS mount tools            (coming soon)"
-echo "     6) sway desktop environment   (use bootstrap.sh)"
-echo "     7) i3   desktop environment   (use bootstrap.sh)"
+#echo "     4) empty-trash utility        (coming soon)"
+#echo "     5) iOS mount tools            (coming soon)"
+#echo "     6) sway desktop environment   (use bootstrap.sh)"
+#echo "     7) i3   desktop environment   (use bootstrap.sh)"
 echo
 echo "     a) All (1-2-3)"
 echo "     h) Help"
 echo "     q) Quit"
 echo
+echo "     Note: desktop installation uses bootstrap.sh"
 }
 
 help_bootstrap() {
@@ -53,11 +54,11 @@ echo "[base] packages to install:"
 grep -vE '^\s*#|^\s*$' "$APT_MANIFEST" | sed 's/^/  - /'
 echo
 echo " Dotfiles:               Vim - TMUX - ZSH"
-echo " Desktop environments:"
-echo "   Use bootstrap.sh --desktop sway"
-echo "   Use bootstrap.sh --desktop i3"
-echo " empty-trash utility:    Install trash bin app for smart deletion and recovery"
-echo " iOS mount tools:        Install iOS (iPhone/iPad) mount tools"
+#echo " Desktop environments:"
+#echo "   Use bootstrap.sh --desktop sway"
+#echo "   Use bootstrap.sh --desktop i3"
+#echo " empty-trash utility:    Install trash bin app for smart deletion and recovery"
+#echo " iOS mount tools:        Install iOS (iPhone/iPad) mount tools"
 echo "          ───────────────────────────────────────────── "
 echo
 }
@@ -139,22 +140,22 @@ install_module dotfiles
 3)
 install_module oh-my-zsh
 ;;
-4)
-echo "Module temporarily unavailable"
-#install_module empty-trash
-;;
-5)
-echo "Module temporarily unavailable"
-#install_module ios-mount
-;;
-6)
-echo "Module temporarily unavailable"
-#install_module sway
-;;
-7)
-echo "Module temporarily unavailable"
-#install_module i3
-;;
+#4)
+#echo "Module temporarily unavailable"
+##install_module empty-trash
+#;;
+#5)
+#echo "Module temporarily unavailable"
+##install_module ios-mount
+#;;
+#6)
+#echo "Module temporarily unavailable"
+##install_module sway
+#;;
+#7)
+#echo "Module temporarily unavailable"
+##install_module i3
+#;;
 a)
 echo "Installing all modules"
 echo " - Installing base"

@@ -1,3 +1,0 @@
-trash-cli
-tree
-less
