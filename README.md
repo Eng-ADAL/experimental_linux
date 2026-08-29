@@ -2,288 +2,430 @@
 ![Bash](https://img.shields.io/badge/Bash-Script-4EAA25?logo=gnu-bash&logoColor=white)
 ![License](https://img.shields.io/github/license/Eng-ADAL/experimental_linux)
 
-# experimental_linux
 
-A modular Debian workstation bootstrap for reproducible, explicit, and maintainable Linux setup.
+![eng-workstation](eng-workstation.png)
 
-The project is designed to take a fresh Debian system and turn it into a usable workstation with:
+# eng-workstation
 
-- base CLI tools
-- dotfiles
-- optional desktop environments
-- custom utilities
-- a later welcome and onboarding flow
+> A lightweight, keyboard-driven Debian engineering workbench for humans and AI coding agents.
 
-The layout is intentionally modular. Each component lives in its own module and is installed in a fixed order.
+**Less desktop. More engineering.**
 
----
+`eng-workstation` is a collection of Bash scripts, configuration and package manifests that turns a fresh Debian installation into a practical engineering workbench.
 
-## Current status
+It is **not an operating system** and it is not a new Linux distribution. Debian stays underneath it. This project simply glues useful tools together, applies sensible configuration and saves you from rebuilding the same workstation by hand.
 
-The project is actively evolving.
+## Table of Contents
 
-### Stable modules
+- [What is eng-workstation?](#what-is-eng-workstation)
+- [Why does it exist?](#why-does-it-exist)
+- [Who is it for?](#who-is-it-for)
+- [Why use it?](#why-use-it)
+- [What does it install?](#what-does-it-install)
+- [How do I use it?](#how-do-i-use-it)
+- [What does it support?](#what-does-it-support)
+- [How does it work?](#how-does-it-work)
+- [Known limitations](#known-limitations)
+- [Where do I go next?](#where-do-i-go-next)
+- [Project / source](#project--source)
+- [License](#license)
 
-- `base`
-- `dotfiles`
+## What is eng-workstation?
 
-### Available desktop modules
+It is an engineering workstation for engineers.
 
-- `i3`
-- `sway`
+The focus is a lightweight, terminal-first workflow with tiling window managers such as **Sway** and **i3**:
 
-### Existing but still being refined
+```text
+less mouse
+more keyboard
+less desktop overhead
+more resources for your work
+```
 
-- `empty-trash`
-- `ios-mount`
+The target workloads include:
 
----
+- AI engineering
+- Data engineering
+- Software engineering
+- DevOps and platform engineering
+- Remote development
+- General Linux development
 
-![experimental_linux](experimental_linux.png)
+The aim is to keep the workstation small enough that RAM, CPU and GPU are available for the thing you actually started the machine for.
 
-## Installation flow
+On our test machine, a basic Debian environment running this setup was around **700 MB RAM at idle**. That is an observation from our environment, not a universal benchmark.
 
-There are two entry points.
+Every bit of RAM matters. Please use it carefully. Three Chrome tabs can remain somebody else's problem. 
 
-### 1. Fresh Debian bootstrap
+## Why does it exist?
 
-This is the machine-first entry point.
+Because rebuilding the same machine is boring.
 
-It is intended to be run from a clean Debian install, usually from a root shell.
+Every new PC, VM or remote coding session tends to require the same work:
 
-Example:
+```text
+packages
+shell
+Vim
+tmux
+dotfiles
+plugins
+permissions
+desktop
+configuration
+```
+
+The individual tasks are easy. The pile of them is not.
+
+Depending on your experience and the starting environment, manually rebuilding a similar workstation can take several days.
+
+`eng-workstation` captures that setup knowledge in code so it can be reused.
+
+> **Build your engineering workbench once. Reuse it instead of rebuilding it every time.**
+
+## Who is it for?
+
+For humans and AI claw bots.
+
+It is for:
+
+- senior engineers who have better things to do than rebuild their dotfiles
+- junior developers who want a practical Linux starting point
+- software, data, AI, DevOps and platform engineers
+- Linux enthusiasts
+- people working with limited hardware
+- people using remote development environments
+- people who prefer tiling window managers and keyboard-driven workflows
+- readers of the engineering setup articles that inspired this project
+
+You do not need the newest hardware.
+
+You do not need TPM 2.0.
+
+You do not need M6 slicon chips
+
+You do not need a NASA workstation to write code. A lof of space missions managed with computers that would be considered hilariously small today.
+
+Calculators and washing machines remain unsupported.
+
+For now.
+
+## Why use it?
+
+Because your workstation should be a tool, not another project. (Mine is become a project, so I sacrifice couple of months my free time for this project, but you do not need for it now)
+
+`eng-workstation` gives you a repeatable engineering environment built from
+existing Debian packages and familiar Linux tools.
+
+Instead of spending hours rebuilding:
+
+- your shell
+- editor
+- terminal workflow
+- development tools
+- desktop environment
+
+you bootstrap them from one small, auditable project.
+
+## What does it install?
+
+The project installs a practical baseline. The rest is yours.
+
+The exact package manifests are the source of truth.
+
+### Base
+
+Core engineering and command-line tools, including:
+
+Git •  Vim • tmux • Zsh • sudo • curl • wget • ripgrep • fd-find • bat • tree • htop • gpg • direnv • fzf
+
+### Dotfiles
+
+The `dotfiles` module configures:
+
+- Vim
+- tmux
+- Zsh
+- Vim Plug and configured Vim plugins
+- TPM and configured tmux plugins
+
+Configuration is applied to the detected normal user, not `root`.
+
+### Desktop
+
+The Sway profile installs a lightweight Wayland desktop stack including Sway, Waybar, Wofi, Foot and related networking, audio and utility packages.
+
+An i3 profile is also provided for lightweight X11 environments.
+
+## How do I use it?
+
+### Recommended: fresh Debian on bare metal
+
+The recommended first installation is a **fresh Debian system on bare metal**.
+
+Run the public bootstrapper:
+
+```bash
+wget -qO- adal.page/dev/run.sh | bash
+```
+
+The public `run.sh` prepares the machine and hands control to the repository's canonical `bootstrap.sh` installer.
+
+### Debian in a VM
+
+Debian 13 in a VM is useful for testing and development.
+
+The installer can install Sway successfully while the VM still cannot launch a graphical Sway session because suitable 3D/DRM graphics support is unavailable.
+
+### Debian on WSL
+
+WSL is useful for testing and remote workflows. For the full desktop experience, bare metal is recommended.
+
+For a fresh Debian WSL installation, initialise root access first.
+
+From PowerShell:
+
+```powershell
+wsl -d debian -u root
+passwd root
+```
+
+Then inside Debian:
 
 ```bash
 su -
-wget -qO- https://adal.page/dev/run.sh | bash
-````
+apt-get update
+apt-get upgrade
+apt-get install wget
+```
 
-This script is responsible only for preparing the system and handing off to the repository bootstrap.
+Then:
 
-### 2. Repository bootstrap
+```bash
+wget -qO- adal.page/dev/run.sh | bash
+```
 
-After the repo is cloned, the main bootstrap can be run directly.
+`wget` is the initial bootstrap prerequisite. Git is installed later by the `base` module, so it does not need to be installed manually for the public bootstrap.
 
-Example:
+Or you can use it on Ubuntu WSL too partially tested on Ubuntu
+
+### Direct repository use
+
+For development or troubleshooting:
 
 ```bash
 git clone https://github.com/Eng-ADAL/experimental_linux.git
 cd experimental_linux
-bash bootstrap.sh --desktop sway
+bash bootstrap.sh --profile sway
 ```
 
-Or:
+Legacy desktop aliases are still accepted:
 
 ```bash
+bash bootstrap.sh --desktop sway
 bash bootstrap.sh --desktop i3
 ```
 
----
+## What does it support?
 
-## Scripts
+`eng-workstation` currently targets Debian.
+
+### Profiles
+
+The resolver currently knows about:
+
+```text
+auto
+sway
+i3
+remote-headless
+server-light
+server-full
+```
+
+`auto` uses detected environment facts instead of blindly installing a desktop everywhere.
+
+Examples:
+
+```text
+Debian bare metal + recognised graphics
+    -> sway
+
+Debian VM without recognised graphics
+    -> remote-headless
+```
+
+The resolver is deliberately conservative. When the environment cannot be safely identified, it does not silently guess.
+
+### Current verification
+
+The MVP has been exercised through the public bootstrap path on:
+
+- Debian 13 virtual machine
+- Debian 13 bare-metal installation
+- Debian WSL testing
+
+The strongest validation was a fresh Debian 13 bare-metal installation, including a working Sway graphical session after reboot.
+
+## How does it work?
+
+The installer is intentionally simple Bash glue.
+
+```mermaid
+flowchart TD
+    U["User"] --> R["run.sh\nmachine bootstrap"]
+    R --> B["bootstrap.sh\ncanonical installer"]
+    B --> D["Detector"]
+    D --> P["Resolver"]
+    P --> L["Planner"]
+    L --> X["Bootstrap execution"]
+    X --> C["common.sh::install_module"]
+
+    C --> M1["base"]
+    M1 --> S["add_sudoer"]
+    S --> M2["dotfiles"]
+    C --> M3["sway / i3"]
+```
+
+### Detector
+
+Collects facts such as Debian, WSL, WSLg, virtualisation, bare metal and graphics capabilities.
+
+### Resolver
+
+Turns explicit user intent or `auto` into one resolved profile.
+
+### Planner
+
+Turns the resolved profile into a deterministic ordered module plan.
+
+For Sway:
+
+```text
+sway
+base
+dotfiles
+sway
+```
+
+The first line is the resolved profile. The remaining lines are the execution order.
+
+### Bootstrap
+
+Executes the plan and keeps module stdin isolated from planner input so that a module cannot accidentally consume the next planned module.
+
+### Modules
+
+Modules handle the actual installation/configuration work.
+
+Current modules include:
+
+```text
+base
+dotfiles
+i3
+sway
+oh-my-zsh
+```
+
+`add_sudoer.sh` is account preparation and therefore runs immediately after `base` rather than being part of profile planning.
+
+## Installation modes
 
 ### `bootstrap.sh`
 
-Automated installer for the repository.
+The canonical automated installer:
 
-It installs:
-
-* `base`
-* `dotfiles`
-* either `sway` or `i3`
-* the next-step handoff script
-
-This is the non-interactive path.
+```bash
+bash bootstrap.sh --profile auto
+bash bootstrap.sh --profile sway
+```
 
 ### `install.sh`
 
-Interactive menu-based installer.
+A small interactive front-end kept for manual workflows and future interactive installation.
 
-This is for manual selection of modules during development or testing.
+Desktop installation is handled by `bootstrap.sh`.
 
----
+Oh My Zsh is optional and is not part of the core MVP plan.
 
-## Repository layout
+## Known limitations
+
+This is an MVP, not a finished Linux distribution.
+
+- Debian is the primary supported distribution.
+- Fresh installations are recommended.
+- Some VMs can install Sway but cannot launch it without suitable 3D/DRM graphics support.
+- The current Sway package set still needs some dependency refinement, including Xwayland and `pactl` support.
+- The current Vim configuration expects Node.js for `coc.nvim` functionality.
+- Some Sway output configuration can be hardware-specific.
+- Captured logs may contain ANSI terminal control sequences from terminal-oriented applications such as Vim.
+- WSL is useful for testing and remote workflows, but bare metal is the recommended environment for the full desktop experience.
+- There is no uninstall workflow yet.
+
+## Logging and diagnostics
+
+The bootstrap reports progress through structured terminal messages such as:
 
 ```text
-experimental_linux/
-├── bootstrap.sh
-├── install.sh
-├── LICENSE
-├── README.md
-│
-├── configs/
-│   ├── tmux/tmux.conf
-│   ├── tmux/tmux.cheatsheet.txt
-│   ├── vim/vimrc
-│   └── zsh/zshrc
-│
-├── manifests
-│   ├── apt-base.txt
-│   └── flatpak.txt
-│
-├── modules/
-│   ├── base/
-│   │   ├── apt.txt
-│   │   └── install.sh
-│   ├── dotfiles/
-│   │   └── install.sh
-│   ├── i3/
-│   │   ├── apt.txt
-│   │   └── install.sh
-│   ├── sway/
-│   │   ├── apt.txt
-│   │   └── install.sh
-│   ├── empty-trash/
-│   ├── ios-mount/
-│   └── modules.list
-│
-├── scripts
-│   ├── create_continue_setup.sh
-│   ├── detect_environment.sh
-│   ├── detect_user.sh
-│   ├── install_flatpak.sh
-│   ├── install_packages.sh
-│   └── link_config.sh
-│
-└── welcome
-    └── welcome.py
+[detector]
+[resolver]
+[MODULE] Installing: base
+[MODULE] Installing: dotfiles
+[MODULE] Installing: sway
+[base] done
+[dotfiles] done
+[sway] done
+Bootstrap complete.
 ```
 
----
+The machine bootstrap keeps an installation log at:
 
-## Modules
+```text
+/var/log/eng-workstation/eng-workstation.log
+```
 
-### base
-
-Core command line tooling and utilities.
-
-Installs packages such as:
-
-* git
-* vim
-* tmux
-* zsh
-* ripgrep
-* fd-find
-* bat
-* tree
-* htop
-* curl
-* wget
-* direnv
-* fzf
-
-### dotfiles
-
-Links user configuration for:
-
-* tmux
-* Vim
-* Zsh
-
-Also installs TPM for tmux and prepares the tmux plugin environment.
-
-### i3
-
-Installs an i3 desktop stack for lightweight systems.
-
-This is intended for older or lower-spec machines where simplicity matters.
-
-### sway
-
-Installs a Sway Wayland stack for newer systems and better modern input support.
-
-### empty-trash
-
-A helper utility for managing the Linux trash folder safely.
-
-### ios-mount
-
-A helper for iPhone or iPad mounting workflows on Linux.
-
----
-
-## Design principles
-
-* Modular
-  Every feature lives in a separate module.
-
-* Explicit
-  Installation order is deliberate, not auto-discovered.
-
-* Reproducible
-  Package lists live in manifests.
-
-* Recoverable
-  Existing dotfiles are backed up before replacement where appropriate.
-
-* Practical
-  The project is built for real Debian machines, not theory.
-
----
-
-## Requirements
-
-Tested on Debian 13.
-
-Required for the fresh bootstrap path:
-
-* root access or `sudo`
-* internet access
-* `wget`
-
-Useful on the workstation itself:
-
-* `git`
-* `sudo`
-* `curl`
-
----
-
-## Current limitations
-
-* No uninstall flow yet
-* No dependency graph between modules yet
-* Welcome app is still a placeholder
-* Some optional modules are still being refined
-* Flatpak support exists, but is not yet the main path
-
-## Open issues
-* WSL clipboard integration
-* Installation profiles (minimal/developer/full)
-* coc.nvim + Node.js separation
-* Uninstall support
-* Environment-aware modules
-
----
-
-## Roadmap
-
-Planned work includes:
-
-* welcome app onboarding
-* first-login setup flow
-* more polished desktop selection
-* module dependency handling
-* better desktop-specific shared config
-* packaging towards a Debian package later on
-
----
-
-## Goal
-
-The long-term goal is simple:
+For deeper troubleshooting:
 
 ```bash
-sudo apt install eng-workstation
+bash scripts/diagnostics.sh
 ```
 
-This repository is the path towards that outcome.
+The diagnostics script checks useful system, user, graphics, package, dotfile and service information.
 
----
+Some terminal applications emit ANSI control sequences when their output is captured. A messy log does not automatically mean a failed installation.
+
+## Where do I go next?
+
+The project is deliberately small. The immediate direction is practical rather than a giant roadmap:
+
+- cleaner installation progress and a loading/progress indicator
+- better desktop-specific dependency handling
+- easier post-install configuration
+- cleaner diagnostics and logging
+- broader hardware/environment coverage
+- packaging, if it proves useful
+
+The core idea stays the same:
+
+> **Save people from rebuilding the same engineering workstation by hand.**
+
+## Project / source
+
+Source repository:
+
+https://github.com/Eng-ADAL/experimental_linux
+
+The public machine bootstrapper lives in the companion `site` repository.
+
+This project exists because we needed it ourselves. We are sharing it because repetitive workstation setup should not consume several days of someone's life.
+
+Use it, modify it, learn from it, or ignore it. The machine is yours. But at least give a second chance your  pre-loved machine 
 
 ## License
 
-MIT
+`eng-workstation` is licensed under the GNU General Public License
+version 3 or any later version.
 
+See [LICENSE](LICENSE) for the full licence.
