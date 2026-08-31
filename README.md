@@ -3,7 +3,7 @@
 ![License](https://img.shields.io/github/license/Eng-ADAL/experimental_linux)
 
 
-![eng-workstation](eng-workstation.png)
+![eng-workstation](eng-work-logo.png)
 
 # eng-workstation
 
