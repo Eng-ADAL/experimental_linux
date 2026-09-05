@@ -1,0 +1,246 @@
+# ~/.config/i3/config
+
+# --- Mod key ---
+set $mod Mod4
+
+# --- Font ---
+font pango:monospace 8
+
+# --- Terminal & App Launcher ---
+bindsym $mod+Return exec alacritty
+
+# Rofi 🔌 Shutdown\n🔁 Reboot\n🌙 Hibernate\n💤 Suspend\n🚪 Logout\n🚪 Exit
+bindsym $mod+Shift+e exec --no-startup-id ~/.config/i3/powermenu.sh
+
+# --- Gaps & Borders ---
+gaps inner 10
+gaps outer 10
+smart_gaps on
+
+default_border pixel 1
+default_floating_border pixel 1
+focus_follows_mouse yes
+
+# Border colors (blue)
+client.focused          #4c7899 #285577 #ffffff #2e9ef4
+client.unfocused        #333333 #222222 #888888 #292d2e
+client.focused_inactive #5f676a #222222 #ffffff #484e50
+client.urgent           #2f343a #900000 #ffffff #900000
+
+# Border colors (Magenta)
+#client.focused          #ff00ff #330033 #ffffff #ff66ff
+#client.unfocused        #550055 #220022 #bbbbbb #990099
+#client.focused_inactive #880088 #220022 #ffffff #aa00aa
+#client.urgent           #ff00aa #330022 #ffffff #ff33cc
+
+# Lid behaviour (Put sleep)
+bindsym --release XF86Sleep exec --no-startup-id ~/bin/lid_monitor.sh
+
+# Dual-up Monitor
+bindsym $mod+F1 exec --no-startup-id monitor_layout.sh dual-up
+# Dual-left 
+bindsym $mod+F2 exec --no-startup-id monitor_layout.sh dual-left
+# External onl
+bindsym $mod+F3 exec --no-startup-id monitor_layout.sh external
+# Internal only
+bindsym $mod+F4 exec --no-startup-id monitor_layout.sh internal
+# Dual-right
+bindsym $mod+F5 exec --no-startup-id monitor_layout.sh dual-right
+
+# Move workspaces
+bindsym $mod+Mod1+Right move workspace to output right
+bindsym $mod+Mod1+Left  move workspace to output left
+bindsym $mod+Mod1+Up    move workspace to output up
+bindsym $mod+Mod1+Down  move workspace to output down
+
+# HDMI assigned workspace default 7
+workspace 7 output HDMI-1
+
+# Automount media
+exec --no-startup-id udiskie --no-automount-on-login --automount --notify
+
+# Bluetooht connection 
+bindsym $mod+b exec --no-startup-id bluetoothctl power on
+bindsym $mod+Shift+b exec --no-startup-id bluetoothctl power off
+bindsym Ctrl+Shift+b exec --no-startup-id bluetoothctl connect XX:XX:XX:XX:XX:XX
+
+# Random wallpaper ~/.config/i3/scripts/random-wall.sh
+#exec --no-startup-id ~/.config/i3/scripts/random-wall.sh
+
+# Chromium disable keyring
+#exec --no-startup-id /usr/bin/gnome-keyring-daemon --start --components=pkcs11,secrets,ssh
+
+# run touchpad setup at login uncomment fresh after fresh installation
+# exec --no-startup-id ~/.config/i3/scripts/touchpad-setup.sh
+
+# --- Audio & Brightness Controls ---
+set $refresh_i3status killall -SIGUSR1 i3status
+
+# Audio (volume up down mute keys)
+bindsym XF86AudioRaiseVolume exec --no-startup-id ~/bin/volume-osd.sh up
+bindsym XF86AudioLowerVolume exec --no-startup-id ~/bin/volume-osd.sh down
+bindsym XF86AudioMute       exec --no-startup-id ~/bin/volume-osd.sh mute
+
+# Media keys 
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous
+
+# Brightness
+# Normal steps
+bindsym XF86MonBrightnessUp   exec brightnessctl set +5%
+bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
+# Fine control with Mod
+bindsym $mod+XF86MonBrightnessUp   exec brightnessctl set +1%
+bindsym $mod+XF86MonBrightnessDown exec brightnessctl set 1%-
+
+# --- Floating / Tiling Rules ---
+floating_modifier $mod
+tiling_drag modifier titlebar
+
+# Application - Workspace Assigment
+for_window [class="firefox-esr"] move to workspace number 1
+for_window [class="Google-chrome"] move to workspace number 3
+for_window [class="Brave-browser"] move to workspace number 4
+for_window [class="VSCodium"] move to workspace number 8
+for_window [class="Joplin"] move to workspace number 9
+for_window [class="KeePassXC"] move to workspace number 9
+
+# Old d_menu
+bindsym $mod+Shift+d        exec --no-startup-id dmenu_run
+# Rofi launcher
+bindsym $mod+d exec rofi -show drun
+
+# File Manager
+for_window [class="Pcmanfm"] floating enable, resize set 900 600, move position center
+bindsym $mod+Shift+f exec --no-startup-id pcmanfm --no-desktop
+
+# gammastep (nightshift)
+exec --no-startup-id ~/bin/gammastep_start.sh
+
+# kill focused window
+bindsym $mod+Shift+q kill
+
+# --- Window Management ---
+# Focus
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+bindsym $mod+Left  focus left
+bindsym $mod+Down  focus down
+bindsym $mod+Up    focus up
+bindsym $mod+Right focus right
+
+# Classic Alt+Tab window switching
+# Alt+Tab -> next window
+bindsym Mod1+Tab focus right
+
+# Alt+Shift+Tab -> previous window
+bindsym Mod1+Shift+Tab focus left
+
+# Move windows
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+#bindsym $mod+Shift+semicolon move right
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# Split orientation
+#bindsym $mod+| split h
+#bindsym $mod+- split v
+
+# Fullscreen toggle
+bindsym $mod+f fullscreen toggle
+
+# Layout toggle
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+
+# Tiling / floating toggle
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+space focus mode_toggle
+
+# Parent / child focus
+bindsym $mod+a focus parent
+
+# --- Workspace Definitions ---
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9"
+set $ws10 "10"
+
+# Switch workspaces
+bindsym $mod+1 workspace number $ws1
+bindsym $mod+2 workspace number $ws2
+bindsym $mod+3 workspace number $ws3
+bindsym $mod+4 workspace number $ws4
+bindsym $mod+5 workspace number $ws5
+bindsym $mod+6 workspace number $ws6
+bindsym $mod+7 workspace number $ws7
+bindsym $mod+8 workspace number $ws8
+bindsym $mod+9 workspace number $ws9
+bindsym $mod+0 workspace number $ws10
+
+bindsym mod1+b workspace number $ws4
+bindsym mod1+t workspace number $ws10
+
+#Switch worspaces 
+bindsym $mod+Ctrl+Left  workspace prev
+bindsym $mod+Ctrl+Right workspace next
+
+# Move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace number $ws1; workspace $ws1
+bindsym $mod+Shift+2 move container to workspace number $ws2; workspace $ws2
+bindsym $mod+Shift+3 move container to workspace number $ws3; workspace $ws3
+bindsym $mod+Shift+4 move container to workspace number $ws4; workspace $ws4
+bindsym $mod+Shift+5 move container to workspace number $ws5; workspace $ws5
+bindsym $mod+Shift+6 move container to workspace number $ws6; workspace $ws6
+bindsym $mod+Shift+7 move container to workspace number $ws7; workspace $ws7
+bindsym $mod+Shift+8 move container to workspace number $ws8; workspace $ws8
+bindsym $mod+Shift+9 move container to workspace number $ws9; workspace $ws9
+bindsym $mod+Shift+0 move container to workspace number $ws10; workspace $ws10
+
+# --- Resize Mode ---
+mode "resize" {
+    bindsym h resize shrink width 10 px or 10 ppt
+    bindsym j resize grow height 10 px or 10 ppt
+    bindsym k resize shrink height 10 px or 10 ppt
+    bindsym l resize grow width 10 px or 10 ppt
+
+    bindsym Left  resize shrink width 10 px or 10 ppt
+    bindsym Down  resize grow height 10 px or 10 ppt
+    bindsym Up    resize shrink height 10 px or 10 ppt
+    bindsym Right resize grow width 10 px or 10 ppt
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym $mod+r mode "default"
+}
+
+bindsym $mod+r mode "resize"
+
+# --- Reload / Restart / Exit ---
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r restart
+
+
+# Default i3 exit
+# bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Exit i3?' -B 'Yes, exit' 'i3-msg exit'"
+
+bar {
+    status_command i3blocks -c ~/.config/i3blocks/config
+}
+
+#  ------ EOF ------
